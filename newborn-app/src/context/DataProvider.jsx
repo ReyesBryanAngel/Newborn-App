@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useReducer } from 'react';
+import { createContext, useContext, useState, useReducer } from 'react';
 const DataContext = createContext();
 
 export const DataProvider = ({ children }) => {
@@ -15,10 +15,10 @@ export const DataProvider = ({ children }) => {
     baby_first_name: '',
     for_multiple_births: '',
     mothers_first_name: '',
-    date_and_time_of_birth: '',
+    date_and_time_of_birth: null,
     sex: '',
     babys_weight_in_grams: '',
-    date_and_time_of_collection: '',
+    date_and_time_of_collection: null,
     age_of_gestation_in_weeks: '',
     specimens: '',
     specimen_status: 'Pending',

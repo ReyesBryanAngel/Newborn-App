@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -26,8 +26,25 @@ function ApiCall () {
 
         setToken(token);
         setUser(user);
-        navigate('/dashboard');
+        navigate('/');
     }
+
+    const checkTokenExpiration = () => {
+      const currentToken = getToken();
+  
+      if (currentToken) {
+        const expirationTime = new Date(currentToken.exp * 1000);
+        const currentTime = new Date();
+  
+        if (currentTime >= expirationTime) {
+          logout();
+        }
+      }
+    };
+  
+    useEffect(() => {
+      checkTokenExpiration();
+    }, [token]);
 
     const logout = () => {
         sessionStorage.clear();
@@ -63,4 +80,4 @@ function ApiCall () {
     }
 }
 
-export default ApiCall
+export default ApiCall;

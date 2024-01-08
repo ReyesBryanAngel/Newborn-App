@@ -1,7 +1,7 @@
 export const menuItems = [
     { 
         text: 'Dashboard', 
-        path: '/dashboard' 
+        path: '/' 
     },
     { 
         text: 'Records', 
@@ -16,7 +16,7 @@ export const menuItems = [
         path: '/courier' 
     },
     { 
-        text: 'Fill up form', 
+        text: 'Specimen Form', 
         path: '/form' 
     },
   ];

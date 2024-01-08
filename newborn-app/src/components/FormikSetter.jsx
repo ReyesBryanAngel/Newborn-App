@@ -1,5 +1,6 @@
 import * as yup from 'yup';
 import { useFormik } from 'formik';
+import ApiCall from '../auth/ApiCall';
 
 export const specimenDataFetcher = (res) => {
   const resData = res?.data?.samples;
@@ -38,47 +39,48 @@ export const specimenDataFetcher = (res) => {
   }
 }
 
-export const UserFormik = (specimenData, dispatch, navigate, createSpecimen) => {
+export const UserFormik = () => {
+    const {http} = ApiCall();
     const initialValues = {
-      type_of_sample: specimenData.type_of_sample,
-      baby_last_name: specimenData.baby_last_name,
-      baby_first_name: specimenData.baby_first_name,
-      mothers_first_name: specimenData.mothers_first_name,
-      for_multiple_births: specimenData.for_multiple_births,
-      place_of_birth: specimenData.place_of_birth,
-      date_and_time_of_birth: specimenData.date_and_time_of_birth,
-      date_and_time_of_collection: specimenData.date_and_time_of_collection,
-      babys_weight_in_grams: specimenData.babys_weight_in_grams,
-      age_of_gestation_in_weeks: specimenData.age_of_gestation_in_weeks,
-      sex: specimenData.sex,
-      specimens: specimenData.specimens,
-      specimen_status: specimenData.specimen_status,
-      place_of_collection: specimenData.place_of_collection,
-      attending_practitioner: specimenData.attending_practitioner,
-      practitioners_day_contact_number: specimenData.practitioners_day_contact_number,
-      practitioners_mobile_number: specimenData.practitioners_mobile_number,
-      practitioner_profession: specimenData.practitioner_profession,
-      practitioner_profession_other: specimenData.practitioner_profession_other,
-      baby_status: specimenData.baby_status,
-      baby_status_cont: specimenData.baby_status_cont,
-      name_of_parent: specimenData.name_of_parent,
-      number_and_street: specimenData.number_and_street,
-      barangay_or_city: specimenData.barangay_or_city,
-      province: specimenData.province,
-      zip_code: specimenData.zip_code,
-      contact_number_of_parent: specimenData.contact_number_of_parent,
-      additional_contact_number: specimenData.additional_contact_number
+      type_of_sample: '',
+      baby_last_name: '',
+      baby_first_name: '',
+      for_multiple_births: '',
+      mothers_first_name: '',
+      date_and_time_of_birth: null,
+      sex: '',
+      babys_weight_in_grams: '',
+      date_and_time_of_collection: null,
+      age_of_gestation_in_weeks: '',
+      specimens: '',
+      specimen_status: 'Pending',
+      place_of_collection: '',
+      place_of_birth: '', 
+      attending_practitioner: '',
+      practitioner_profession: '',
+      practitioner_profession_other: '',
+      practitioners_day_contact_number: '',
+      practitioners_mobile_number: '',
+      baby_status: '',
+      baby_status_cont: '',
+      name_of_parent: '',
+      number_and_street: '',
+      barangay_or_city: '',
+      province: '',
+      zip_code: '',
+      contact_number_of_parent: '',
+      additional_contact_number: '',
     }
 
     const validationSchema = yup.object({
         type_of_sample: yup.string().required('Type of Sample is required'),
         baby_last_name: yup.string().required('Babys Last Name is required'),
-        baby_first_name: yup.string(),
+        baby_first_name: yup.string().required(`Baby's First Name is required`),
         mothers_first_name: yup.string().required('Mothers First Name is required'),
         for_multiple_births: yup.string().required('For Multiple Births is required'),
-        date_and_time_of_birth: yup.string().required('Date of Birth is required'),
+        date_and_time_of_birth: yup.date().typeError('Invalid Date').required('Date of Birth is required'),
         place_of_birth: yup.string().required('Place of Birth is required'),
-        date_and_time_of_collection: yup.string().required('Date and Time of Collection is required'),
+        date_and_time_of_collection: yup.date().typeError('Invalid Date').required('Date and Time of Collection is required'),
         babys_weight_in_grams: yup.number().required("Baby's Weight in Grams is required"),
         age_of_gestation_in_weeks: yup.number().required('Age of Gestation (in Weeks) is required'),
         sex: yup.string().required('Sex is required'),
@@ -118,13 +120,7 @@ export const UserFormik = (specimenData, dispatch, navigate, createSpecimen) => 
         validationSchema,
         validateOnBlur: true,
         enableReinitialize: false,
-        onSubmit: (values) => {
-            if (createSpecimen) {
-                dispatch({ type: 'UPDATE', payload: values });
-                setFieldValue("specimen_status", "Pending");
-                navigate("/add-specimen/specimen-review");
-            }
-          },
+        onSubmit: () => {},
     });
 
     const {
@@ -139,7 +135,8 @@ export const UserFormik = (specimenData, dispatch, navigate, createSpecimen) => 
         setTouched,
         validateForm,
         handleChange,
-        handleSubmit
+        handleSubmit,
+        isSubmitting
     } = formik;
 
     return {
@@ -154,6 +151,7 @@ export const UserFormik = (specimenData, dispatch, navigate, createSpecimen) => 
         setTouched,
         validateForm,
         handleChange,
-        handleSubmit
+        handleSubmit,
+        isSubmitting
     }
 }

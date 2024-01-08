@@ -1,7 +1,7 @@
 import React from 'react';
 import { InputLabel, TextField } from '@mui/material';
 
-const InputField = ({ title }) => {
+const InputField = ({ id, name, title, values, handleChange, handleBlur, error, helperText, disabled}) => {
     return (
         <div>
             <InputLabel htmlFor="name">
@@ -11,15 +11,16 @@ const InputField = ({ title }) => {
             </InputLabel>
             <TextField
                 className="w-full"
-                id="name"
-                name="name"
+                id={id}
+                name={name}
                 variant="standard"
                 type="text"
-                // value={values?.name}
-                // onChange={handleChange}
-                // disabled={disabledForm}
-                // onBlur={handleBlur}
-                // {...errorAndHelperText(touched, errors, "name")}
+                value={values}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                error={error}
+                helperText={helperText}
+                disabled={disabled}
             />
         </div>
     )
