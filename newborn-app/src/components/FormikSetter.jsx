@@ -40,7 +40,6 @@ export const specimenDataFetcher = (res) => {
 }
 
 export const UserFormik = () => {
-    const {http} = ApiCall();
     const initialValues = {
       type_of_sample: '',
       baby_last_name: '',

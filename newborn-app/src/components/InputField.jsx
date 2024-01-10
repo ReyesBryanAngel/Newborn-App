@@ -10,7 +10,7 @@ const InputField = ({ id, name, title, values, handleChange, handleBlur, error, 
                 </div>
             </InputLabel>
             <TextField
-                className="w-full"
+                className="w-64 md:w-96 lg:w-full"
                 id={id}
                 name={name}
                 variant="standard"

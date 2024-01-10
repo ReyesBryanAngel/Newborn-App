@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
     Typography, 
     Toolbar,
@@ -11,7 +11,13 @@ import {
     Tooltip,
     Menu,
     MenuItem,
-    ListItemIcon
+    ListItemIcon,
+    Badge,
+    Popper,
+    Grow,
+    ClickAwayListener,
+    Paper,
+    MenuList
 } from "@mui/material";
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -21,12 +27,39 @@ import { useNavigate } from 'react-router-dom';
 import MyLogo from "../assets/my-logo.png"
 import LogoutIcon from "@mui/icons-material/Logout";
 import ApiCall from '../auth/ApiCall';
+import { useQuery } from "@tanstack/react-query";
+import { useData } from '../context/DataProvider';
+import dayjs from 'dayjs';
+import 'dayjs/locale/en';
 
 const Header = () => {
     const [avatar, setAvatar] = useState(null);
     const {token, logout, http, user} = ApiCall();
     const [isDrawerOpen, setDrawerOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(false);
+    const [specimenLoad, setSpecimenLoad] = useState(false);
+    const [notificationCount, setNotificationCount] = useState(0);
+    const [results, setResults] = useState([]);
+    const [badgeOpener, setBadgeOpener] = useState(false);
+    const { setSpecimenFiltered, setGoToClicked, specimenFiltered } = useData();
+    const anchorRef = useRef(null);
+
+    const {data, isLoading } = useQuery({
+        queryKey: ["specimen"],
+        enabled: !specimenLoad,
+        retryDelay: 500,
+        refetchOnWindowFocus: false,
+        queryFn: () =>
+            http
+              .get(`v1/specimens/all-samples`)
+              .then((res) => {
+                  setSpecimenLoad(true);
+                  const specimenWithResult = res?.data?.filter(r => r.result !== null && !r.viewed);
+                  setResults(specimenWithResult);
+                  setNotificationCount(specimenWithResult?.length);
+                  return res?.data;
+            })
+    })
 
     const logoutUser = () => {
         if(token !== undefined){
@@ -58,74 +91,212 @@ const Header = () => {
             const avatarInitial = `${nameInitial}${lasNameInitial}`
             setAvatar(avatarInitial);
         }
+        console.log(specimenFiltered);
     }, [user])
 
     const open = Boolean(anchorEl);
+    
     const openAvatar = (event) => {
         setAnchorEl(event.currentTarget);
     }
     const isAvatarOpen = () => {
         setAnchorEl(null);
     }
+    const openBadge = () => {
+        setBadgeOpener((prevOpen) => !prevOpen);
+    };
 
+    const viewInResult = async(e, index) => {
+        const specimenToUpdate = data[index];
+        if (specimenToUpdate?.result !== null && specimenToUpdate?.viewed === 0) {
+            const updatedSpecimen = {
+                    ...specimenToUpdate,
+                        viewed: 1,
+            };
+            const updatedSpecimensArray = data.filter(item =>
+                item.id === specimenToUpdate.id
+            );
+    
+            console.log(updatedSpecimensArray);
+    
+           
+            await http.put(`v1/specimens/${specimenToUpdate.id}`, updatedSpecimen)
+            .then((res) => {
+                navigate("/results");
+                setSpecimenFiltered(updatedSpecimensArray);
+                setNotificationCount(updatedSpecimensArray?.length);
+                setGoToClicked(true);
+                setBadgeOpener(false);
+            }).catch((e) => {
+                console.error(e);
+            });   
+        }
+    }
+
+    const handleClose = (event) => {
+        if (anchorRef.current && anchorRef.current.contains(event.target)) {
+          return;
+        }
+    
+        setBadgeOpener(false);
+    };
+
+    function handleListKeyDown(event) {
+        if (event.key === 'Tab') {
+          event.preventDefault();
+          setBadgeOpener(false);
+        } else if (event.key === 'Escape') {
+            setBadgeOpener(false);
+        }
+      }
+
+      const prevOpen = React.useRef(badgeOpener);
+    React.useEffect(() => {
+        if (prevOpen.current === true && badgeOpener === false) {
+            anchorRef.current.focus();
+        }
+
+        prevOpen.current = badgeOpener;
+    }, [badgeOpener]);
 
     return (
         <div className={`fixed w-full top-0 bg-blue-100 left-1/2 transform -translate-x-1/2 z-10 pr-5 h-16`}>
-        <Toolbar className='flex justify-between items-center'>
-            <div className='flex items-center'>
-                <Box
-                    component="img"
-                    className='h-20 lg:h-24 hover:cursor-pointer'
-                    alt="my logo."
-                    src={MyLogo}
-                    sx={{ marginTop: "-9px" }}
-                    
-                />
-                <Typography sx={{ marginTop: "-9px", marginLeft:"-10px" }}>New Born</Typography>
-            </div>
-            <div className='flex gap-2 mb-2 lg:mb-5'>
-                <div>
-                    {!lg &&(
-                        <IconButton edge="start" aria-label="menu" onClick={toggleDrawer(true)}>
-                            <MenuIcon />
-                        </IconButton>
-                    )}
-                    <NotificationsNoneIcon fontSize='medium' color='primary' />
-                    <Tooltip onClick={openAvatar}>
-                        <IconButton>
-                            <div className='flex justify-center items-center rounded-full w-9 h-9 p-3 border-2 text-white bg-blue-300'>
-                                <div className='flex text-xs'>
-                                    {avatar}
-                                </div>
-                            </div>
-                        </IconButton>
-                    </Tooltip>
+            <Toolbar className='flex justify-between items-center'>
+                <div className='flex items-center'>
+                    <Box
+                        component="img"
+                        className='h-20 lg:h-24 hover:cursor-pointer'
+                        alt="my logo."
+                        src={MyLogo}
+                        sx={{ marginTop: "-9px" }}
+                        
+                    />
+                    <Typography sx={{ marginTop: "-9px", marginLeft:"-10px" }}>New Born</Typography>
                 </div>
-                <Menu
-                    id="basic-menu"
-                    anchorEl={anchorEl}
-                    open={open}
-                    onClick={isAvatarOpen}
-                    MenuListProps={{
-                        'aria-labelledby': 'basic-button',
-                    }}
-                >
-                <MenuItem>
-                    <ListItemIcon>
-                    <PermIdentityIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Profile</ListItemText>
-                </MenuItem>
-                <MenuItem onClick={logoutUser}>
-                    <ListItemIcon>
-                    <LogoutIcon fontSize="small" />
-                    </ListItemIcon>
-                    <ListItemText>Logout</ListItemText>
-                </MenuItem>
-                </Menu>
-
-            </div>
-        </Toolbar>
+                <div className='flex gap-2 mb-2 lg:mb-5'>
+                    <div>
+                        {!lg &&(
+                            <IconButton edge="start" aria-label="menu" onClick={toggleDrawer(true)}>
+                                <MenuIcon />
+                            </IconButton>
+                        )}
+                        <IconButton 
+                            onClick={openBadge} 
+                            ref={anchorRef}
+                            aria-controls={badgeOpener ? 'composition-menu' : undefined}
+                            aria-expanded={badgeOpener ? 'true' : undefined}
+                            aria-haspopup="true"
+                        >
+                            <Badge badgeContent={notificationCount} color="error">
+                                <NotificationsNoneIcon fontSize='medium' color='primary' />
+                            </Badge>
+                        </IconButton>
+                        <Popper
+                            open={badgeOpener}
+                            anchorEl={anchorRef.current}
+                            role={undefined}
+                            placement="bottom-start"
+                            transition
+                            disablePortal
+                        >
+                            {({ TransitionProps, placement }) => (
+                                <Grow
+                                    {...TransitionProps}
+                                    style={{
+                                        transformOrigin:
+                                        placement === 'bottom-start' ? 'left top' : 'left bottom',
+                                    }}
+                                >
+                                    <Paper sx={{ width:"100%" }}>
+                                        <ClickAwayListener onClickAway={handleClose}>
+                                        <MenuList
+                                            autoFocusItem={badgeOpener} 
+                                            onKeyDown={handleListKeyDown}
+                                        >
+                                            <div className='text-start m-2'>
+                                                <Typography>Notifications</Typography>
+                                            </div>
+                                            {results?.map((r, index) => {
+                                                const mother = `${r?.baby_last_name}, ${r?.mothers_first_name}`;
+                                                const resultColorMap = {
+                                                    'Elevated': 'bg-red-500',
+                                                    'Normal': 'bg-green-500',
+                                                    'Inadequate': 'bg-yellow-500',
+                                                };
+                                                const border = "1px solid #e2e8f0";
+                                                const bgColorClass = resultColorMap[r?.result] || 'bg-gray-500';
+                                                const timeElapsed = dayjs().diff(dayjs(r?.updated_at), 'minute');
+                                                let timeAgoText = '';
+                                                if (timeElapsed < 60) {
+                                                    timeAgoText = `${timeElapsed} min ago`;
+                                                } else if (timeElapsed < 1440) {
+                                                    const hoursElapsed = Math.floor(timeElapsed / 60);
+                                                    timeAgoText = `${hoursElapsed} ${hoursElapsed === 1 ? 'hour' : 'hours'} ago`;
+                                                } else {
+                                                    const daysElapsed = Math.floor(timeElapsed / 1440);
+                                                    timeAgoText = `${daysElapsed} ${daysElapsed === 1 ? 'day' : 'days'} ago`;
+                                                }
+                                                return (
+                                                    <MenuItem 
+                                                        onClick={(e) => {
+                                                            viewInResult(e, index)
+                                                        }} 
+                                                        key={index} 
+                                                        sx={{ borderTop: {border}, borderBottom: {border} }}
+                                                    >
+                                                        <div className='flex justify-center gap-10'>
+                                                            <div className={`w-4 h-4 rounded-full ${bgColorClass}`}></div>
+                                                            <div className='flex flex-col gap-5 text-start'>
+                                                                <Typography>{r?.result.split(" ")[0]} Findings</Typography>
+                                                                <Typography>{mother}</Typography>
+                                                            </div>
+                                                            <div>{timeAgoText}</div>
+                                                        </div>
+                                                    </MenuItem>
+                                                )
+                                            })}
+                                        </MenuList>
+                                        </ClickAwayListener>
+                                    </Paper>
+                                </Grow>
+                            )}
+                        </Popper>
+                            
+                        <Tooltip onClick={openAvatar} sx={{ position:"relative" }}>
+                            <IconButton>
+                                <div className='flex justify-center items-center rounded-full w-9 h-9 p-3 border-2 text-white bg-blue-300'>
+                                    <div className='flex text-xs'>
+                                        {avatar}
+                                    </div>
+                                </div>
+                            </IconButton>
+                        </Tooltip>
+                        </div>
+                        <Menu
+                            id="basic-menu"
+                            anchorEl={anchorEl}
+                            open={open}
+                            onClick={isAvatarOpen}
+                            MenuListProps={{
+                                'aria-labelledby': 'basic-button',
+                            }}
+                        >
+                            <MenuItem>
+                                <ListItemIcon>
+                                <PermIdentityIcon fontSize="small" />
+                                </ListItemIcon>
+                                <ListItemText>Profile</ListItemText>
+                            </MenuItem>
+                            <MenuItem onClick={logoutUser}>
+                                <ListItemIcon>
+                                <LogoutIcon fontSize="small" />
+                                </ListItemIcon>
+                                <ListItemText>Logout</ListItemText>
+                            </MenuItem>
+                        </Menu>
+                </div>
+            </Toolbar>
+        
         <Drawer anchor="left" open={isDrawerOpen} onClose={toggleDrawer(false)}>
             <List>
                 {menuItems.map((item, index) => (

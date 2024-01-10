@@ -1,125 +1,109 @@
-import * as React from 'react';
-import Paper from '@mui/material/Paper';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TablePagination from '@mui/material/TablePagination';
-import TableRow from '@mui/material/TableRow';
+import { useEffect, useState } from 'react';
+import { useQuery }  from "@tanstack/react-query";
+import ApiCall from '../../auth/ApiCall';
+import { 
+  Card, 
+  Typography, 
+  CardContent, 
+  Box, 
+  CircularProgress, 
+  TextField, 
+  InputAdornment } from "@mui/material";
+import dayjs from 'dayjs';
+import SearchIcon from '@mui/icons-material/Search';
 
-const columns = [
-  { id: 'name', label: 'Name', minWidth: 170 },
-  { id: 'code', label: 'ISO\u00a0Code', minWidth: 100 },
-  {
-    id: 'population',
-    label: 'Population',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'size',
-    label: 'Size\u00a0(km\u00b2)',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toLocaleString('en-US'),
-  },
-  {
-    id: 'density',
-    label: 'Density',
-    minWidth: 170,
-    align: 'right',
-    format: (value) => value.toFixed(2),
-  },
-];
 
-function createData(name, code, population, size) {
-  const density = population / size;
-  return { name, code, population, size, density };
-}
+const Records = () => {
+  const [specimenLoad, setSpecimenLoad] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const { http } = ApiCall();
 
-const rows = [
-  createData('India', 'IN', 1324171354, 3287263),
-  createData('China', 'CN', 1403500365, 9596961),
-  createData('Italy', 'IT', 60483973, 301340),
-  createData('United States', 'US', 327167434, 9833520),
-  createData('Canada', 'CA', 37602103, 9984670),
-  createData('Australia', 'AU', 25475400, 7692024),
-  createData('Germany', 'DE', 83019200, 357578),
-  createData('Ireland', 'IE', 4857000, 70273),
-  createData('Mexico', 'MX', 126577691, 1972550),
-  createData('Japan', 'JP', 126317000, 377973),
-  createData('France', 'FR', 67022000, 640679),
-  createData('United Kingdom', 'GB', 67545757, 242495),
-  createData('Russia', 'RU', 146793744, 17098246),
-  createData('Nigeria', 'NG', 200962417, 923768),
-  createData('Brazil', 'BR', 210147125, 8515767),
-];
+  const { data, isLoading } = useQuery({
+    queryKey: ["specimen"],
+    enabled: !specimenLoad,
+    retryDelay: 500,
+    refetchOnWindowFocus: false,
+    queryFn: () =>
+      http
+        .get(`v1/specimens/all-samples`)
+        .then((res) => {
+          setSpecimenLoad(true);
+          return res?.data;
+        })
+  });
 
-export default function Records() {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  useEffect(() => {
+    if (!isLoading) {
+      console.log(data);
+    }
+  });
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
+  
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
+  const showRecords = data && !isLoading;
+
+  const filteredRecords = data?.filter((record) =>
+    `${record?.baby_last_name}, ${record?.mothers_first_name}`.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className='mt-20 lg:ml-36'>
-        <Paper elevation={4} sx={{ width: '100%', overflow: 'hidden' }}>
-            <TableContainer sx={{ maxHeight: 440 }}>
-                <Table stickyHeader aria-label="sticky table">
-                  <TableHead>
-                    <TableRow>
-                    {columns.map((column) => (
-                        <TableCell
-                        key={column.id}
-                        align={column.align}
-                        style={{ minWidth: column.minWidth }}
-                        >
-                        {column.label}
-                        </TableCell>
-                    ))}
-                    </TableRow>
-                </TableHead>
-                <TableBody>
-                    {rows
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map((row) => {
-                        return (
-                        <TableRow hover role="checkbox" tabIndex={-1} key={row.code}>
-                            {columns.map((column) => {
-                            const value = row[column.id];
-                            return (
-                                <TableCell key={column.id} align={column.align}>
-                                {column.format && typeof value === 'number'
-                                    ? column.format(value)
-                                    : value}
-                                </TableCell>
-                            );
-                            })}
-                        </TableRow>
-                        );
-                    })}
-                </TableBody>
-                </Table>
-            </TableContainer>
-            <TablePagination
-                rowsPerPageOptions={[10, 25, 100]}
-                component="div"
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
+    <div className='flex items-center justify-center mt-20 lg:ml-36'>
+      {showRecords ? (
+        <div className='w-full flex flex-col whitespace-nowrap gap-10'>
+          <div className='text-left'>
+            <Typography variant='h5'>Patients (by Mother&apos;s Name)</Typography>
+          </div>
+          <div className='self-end'>
+            <TextField
+              label="Search by Mother's Name"
+              variant="standard"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className='mb-3'
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment>
+                     <SearchIcon />
+                  </InputAdornment>
+                 
+                ),
+              }}
             />
-        </Paper>
+          </div>
+          <div className='w-full grid gap-10 md:grid-cols-2 lg:grid-cols-3'>
+            {filteredRecords?.map((record, index) => {
+              const dateOfBirth = new Date(record?.date_and_time_of_birth);
+              const formattedDate = dayjs(dateOfBirth).format("YYYY-MM-DD");
+              const mother = `${record?.baby_last_name}, ${record?.mothers_first_name}`;
+
+              return (
+                <Card key={index} elevation={4}>
+                  <CardContent className='flex flex-col text-left lg:w-96'>
+                    <Typography variant='h6'>{mother}</Typography>
+                    <div className='flex mt-5 space-x-10 pl-5 lg:px-10 lg:space-x-10 lg:pl-5'>
+                      <div className='whitespace-nowrap'>
+                        <Typography>Birthday<br />{formattedDate}</Typography>
+                      </div>
+                      <div>
+                        <Typography>Sex<br />{record?.sex}</Typography>
+                      </div>
+                      <div>
+                        <Typography>Status<br />{record?.specimen_status}</Typography>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      ) :
+        <Box sx={{ height: '80vh', display: 'flex', alignItems: 'center' }}>
+          <CircularProgress />
+        </Box>
+      }
     </div>
   );
-}
+};
+
+export default Records;

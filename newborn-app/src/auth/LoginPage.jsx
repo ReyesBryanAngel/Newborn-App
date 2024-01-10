@@ -68,8 +68,8 @@ const { http, setToken } = ApiCall();
             flexDirection: 'column', 
             alignItems: 'center', 
             width: '100%', 
-            height: "70vh",
-            marginTop:"4rem"
+            marginTop:"4rem",
+            paddingBottom:"3rem"
             }}
         >
             <Box

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import CustomCheckbox from '../../CustomCheckBox';
 import { 
     Card,
@@ -63,7 +63,6 @@ const FillupForm = () => {
                 }
          })
         .catch((e) => {
-            console.log(e);
             setSnackBarInfo(true);
             setResponse(e.response?.data?.message)
         });    
