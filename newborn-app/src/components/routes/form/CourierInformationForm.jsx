@@ -1,10 +1,8 @@
-import { useState } from 'react';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { useNavigate } from 'react-router-dom';
 import { Card, Typography, Autocomplete, TextField, InputLabel, Button } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { useData } from "../../../context/DataProvider";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateTimeField } from '@mui/x-date-pickers/DateTimeField';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
@@ -16,7 +14,6 @@ import InputField from '../../InputField';
 const CourierInformationForm = () => {
     const navigate = useNavigate();
     const { http } = ApiCall();
-    const [startDate, setStartDate] = useState(dayjs());
 
     const formik = useFormik({
         initialValues: {

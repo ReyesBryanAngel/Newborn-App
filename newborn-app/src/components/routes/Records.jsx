@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useQuery }  from "@tanstack/react-query";
 import ApiCall from '../../auth/ApiCall';
 import { 
@@ -11,6 +11,7 @@ import {
   InputAdornment } from "@mui/material";
 import dayjs from 'dayjs';
 import SearchIcon from '@mui/icons-material/Search';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 
 
 const Records = () => {
@@ -32,15 +33,7 @@ const Records = () => {
         })
   });
 
-  useEffect(() => {
-    if (!isLoading) {
-      console.log(data);
-    }
-  });
-
-  
-
-  const showRecords = data && !isLoading;
+  const showRecords = data?.length > 0 && !isLoading;
 
   const filteredRecords = data?.filter((record) =>
     `${record?.baby_last_name}, ${record?.mothers_first_name}`.toLowerCase().includes(searchQuery.toLowerCase())
@@ -48,8 +41,19 @@ const Records = () => {
 
   return (
     <div className='flex items-center justify-center mt-20 lg:ml-36'>
+      {data?.length === 0 && (
+                <div className='flex flex-col justify-center items-center mt-20'>       
+                    <div>
+                        <Typography size='m' style={{ fontSize:"20px", fontWeight:"500" }}>You have no Record Batches</Typography>
+                        <Typography size='s'>Fill up a Specimen Form to add Records.</Typography>
+                    </div>
+                    <div className='flex justify-center items-center p-3 text-white'>
+                        <ReceiptLongIcon sx={{ height:"300px", width:"300px", color:"#6DB3F2" }} />   
+                    </div>  
+                </div>
+            )}
       {showRecords ? (
-        <div className='w-full flex flex-col whitespace-nowrap gap-10'>
+        <div className='flex lg:w-full flex-col gap-10'>
           <div className='text-left'>
             <Typography variant='h5'>Patients (by Mother&apos;s Name)</Typography>
           </div>
@@ -77,10 +81,10 @@ const Records = () => {
               const mother = `${record?.baby_last_name}, ${record?.mothers_first_name}`;
 
               return (
-                <Card key={index} elevation={4}>
-                  <CardContent className='flex flex-col text-left lg:w-96'>
+                <Card key={index} elevation={4} sx={{ width:"330px" }}>
+                  <CardContent className='flex flex-col text-left'>
                     <Typography variant='h6'>{mother}</Typography>
-                    <div className='flex mt-5 space-x-10 pl-5 lg:px-10 lg:space-x-10 lg:pl-5'>
+                    <div className='flex mt-5 space-x-10 pl-5'>
                       <div className='whitespace-nowrap'>
                         <Typography>Birthday<br />{formattedDate}</Typography>
                       </div>
@@ -98,6 +102,7 @@ const Records = () => {
           </div>
         </div>
       ) :
+        data?.length > 0 &&
         <Box sx={{ height: '80vh', display: 'flex', alignItems: 'center' }}>
           <CircularProgress />
         </Box>

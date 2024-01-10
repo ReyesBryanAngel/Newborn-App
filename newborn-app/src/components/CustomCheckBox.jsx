@@ -42,7 +42,6 @@ const CustomCheckbox = ({
                     onChange={(e) => {
                         const checkBoxValue = e?.target?.value;
                         handleChange(e)
-                        console.log(checkBoxValue);
                         if (name === "practitioner_profession" && checkBoxValue !== "other") {
                             setFieldValue("practitioner_profession_other", "")   
                         }

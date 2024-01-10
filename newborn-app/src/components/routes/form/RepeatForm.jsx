@@ -19,8 +19,6 @@ import { useQuery } from "@tanstack/react-query";
 
 const RepeatForm = () => {
     const navigate = useNavigate();
-    const [snackBarInfo, setSnackBarInfo] = useState(false);
-    const [response, setResponse] = useState(null);
     const {http} = ApiCall();
     const [specimenLoad, setSpecimenLoad] = useState(false);
     const SpecimenForm = UserFormik();
@@ -35,7 +33,6 @@ const RepeatForm = () => {
                 .get(`v1/specimens/refresh-specimen`)
                 .then((res) => {
                     setSpecimenLoad(true);
-                    console.log(specimenDataFetcher(res));
                     SpecimenForm.setValues(specimenDataFetcher(res))
                     return res?.data;
                 })

@@ -22,19 +22,20 @@ const Courier = () => {
     const { http } = ApiCall();
     const [pendingSpecimens, setPendingSpecimens] = useState([]);
     const [sentSpecimens, setSentSpecimens] = useState([]);
-    const [specimenLoad, setSpecimenLoad] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
+    const [allSamplesLoad, setAllSamplesLoad] = useState(false);
+    const [couriersLoad, setCouriersLoad] = useState(false);    
 
     const { data: allSamples, isLoading: allSampleLoading } = useQuery({
         queryKey: ["sample"],
-        enabled: !specimenLoad,
+        enabled: !allSamplesLoad,
         retryDelay: 500,
         refetchOnWindowFocus: false,
-        queryFn: () =>
-            http
+        queryFn: async () =>
+            await http
                 .get(`v1/specimens/all-samples`)
                 .then((res) => {
-                    setSpecimenLoad(true);
+                    setAllSamplesLoad(true);
 
                     const pendingSamples = res?.data?.filter((patient) => patient.specimen_status === "Pending");
                     const sentSamples = res?.data?.filter((patient) => patient.specimen_status === "In Transit");
@@ -46,16 +47,15 @@ const Courier = () => {
 
     const { data: couriers, isLoading: courierLoading } = useQuery({
         queryKey: ["courier"],
-        enabled: !specimenLoad,
+        enabled: !couriersLoad,
         retryDelay: 500,
         refetchOnWindowFocus: false,
         queryFn: () =>
             http
                 .get(`v1/specimens/show-couriers`)
                 .then((res) => {
-                    setSpecimenLoad(true);
+                    setCouriersLoad(true);
 
-                    console.log(res?.data);
                     return res?.data;
                 })
     })
@@ -78,11 +78,11 @@ const Courier = () => {
 
     return (
     <div className='flex items-center justify-center mt-16 lg:ml-36'>
-        {!couriers?.length > 0 && showRecords && (
+        { pendingSpecimens?.length === 0 && sentSpecimens?.length === 0 && allSamplesLoad && (
             <div className='flex flex-col justify-center items-center mt-20'>       
                 <div>
                     <Typography size='m' style={{ fontSize:"20px", fontWeight:"500" }}>You have no Courier Batches</Typography>
-                    <Typography size='s'>Fill up a Specimen Form to add Patients to send via Courier.</Typography>
+                    <Typography size='s'>Fill up a Specimen Form to add Records that will be sent via Courier.</Typography>
                 </div>
                 <div className='flex justify-center items-center p-3 text-white'>
                     <LocalShippingIcon sx={{ height:"300px", width:"300px", color:"#6DB3F2" }} />   
@@ -90,7 +90,7 @@ const Courier = () => {
             </div>
         )}
         {showRecords ? (
-          <div className='flex w-full flex-col'>
+          <div className='flex lg:w-full flex-col'>
             <div className='text-left ml-5 lg:ml-0 m-5'>
               <Typography variant='h5'>Courier</Typography>
             </div>
@@ -143,7 +143,7 @@ const Courier = () => {
                 
                 return (
                     <IconButton key={index} onClick={() => {showCourierSample(c.tracking_number)}}>
-                        <Card elevation={4}>
+                        <Card key={index} elevation={4} sx={{ width:"330px" }}>
                             <CardContent className='flex flex-col text-left'>
                                 <Typography variant='h6'>{track}</Typography>
                                 <div className='flex mt-5 space-x-8 pl-5 lg:space-x-9 lg:pl-0'>
@@ -165,6 +165,7 @@ const Courier = () => {
             </div>
           </div>
         ) :
+            couriers?.length > 0 &&
             <Box sx={{ height: '80vh', display: 'flex', alignItems: 'center' }}>
                 <CircularProgress />
             </Box>

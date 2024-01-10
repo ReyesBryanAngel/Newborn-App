@@ -1,8 +1,7 @@
 import React from 'react'
-import Dashboard from './Dashboard'
 import Header from './Header.'
 import Sidebar from './Sidebar'
-import { Card, Box, Typography, Button } from "@mui/material";
+import { Card, Typography, Button } from "@mui/material";
 
 const dashboardData = [
     {

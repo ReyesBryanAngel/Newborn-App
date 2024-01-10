@@ -8,6 +8,7 @@ import Results from "./components/routes/Results";
 import Courier from "./components/routes/courier/Courier";
 import FillupForm from "./components/routes/form/FillupForm";
 import { DataProvider } from './context/DataProvider';
+import RegisterPage from './auth/RegisterPage';
 import LoginPage from './auth/LoginPage';
 import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 import RouteProtector from './auth/RouteProtector';
@@ -37,7 +38,8 @@ function App() {
       <QueryClientProvider client={queryCLient}>
         <Router>
           <Routes>
-              <Route path="/login" element={<LoginPage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
             <Route path="/" element={
                 <RouteProtector isLoggedIn={isLoggedIn}>
                   <ApplicationLayout>

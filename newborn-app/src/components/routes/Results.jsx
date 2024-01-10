@@ -17,7 +17,9 @@ import {
     Dialog,
     DialogContentText
 } from "@mui/material";
+import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 import SearchIcon from '@mui/icons-material/Search';
+import DescriptionIcon from '@mui/icons-material/Description';
 
 const Results = () => {
     const navigate = useNavigate();
@@ -25,9 +27,6 @@ const Results = () => {
     const { goToClicked, setSpecimenFiltered, specimenFiltered } = useData();
     const [searchQuery, setSearchQuery] = useState('');
     const [specimenLoad, setSpecimenLoad] = useState(false);
-    const [normalResult, setNormalResult] = useState([]);
-    const [elevatedResult ,setElevatedResult] = useState([]);
-    const [inadequateResult,setInadequateResult] = useState([]);
     const [repeatFormConfitmation, setRepeatFormConfirmation] = useState(false);
     const [indexHolder, setIndexHolder] = useState(null);
 
@@ -41,10 +40,6 @@ const Results = () => {
                 .get(`v1/specimens/all-samples`)
                 .then((res) => {
                     setSpecimenLoad(true);
-                    // const specimenWithResults = data?.filter(r => r.result !== null);
-                    // if (!goToClicked) {
-                    //     setSpecimenFiltered(specimenWithResults);
-                    // }
                     return res?.data;
                 })
     })
@@ -93,35 +88,47 @@ const Results = () => {
     useEffect(()=> {
         if (!isLoading && data) {
             const specimenWithResults = data?.filter(r => r.result !== null);
-            const filterNormal = data?.filter(n => n.result === "Normal");
-            const filterElevated = data?.filter(n => n.result === "Elevated");
-            const filterInadequate = data?.filter(n => n.result === "Inadequate");
-            setNormalResult(filterNormal);
-            setElevatedResult(filterElevated);
-            setInadequateResult(filterInadequate);
             if (!goToClicked) {
                 setSpecimenFiltered(specimenWithResults);
             }
         }
     },[isLoading, data, goToClicked, setSpecimenFiltered])
+
     const filteredRecords = specimenFiltered?.filter((record) =>
-        record?.result.toLowerCase().includes(searchQuery.toLowerCase())
+        record?.result?.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const showRecords = !isLoading && specimenFiltered?.length !== 0;
+    const showRecords = !isLoading && specimenFiltered?.length > 0;
 
     return (
         <div className='flex items-center justify-center mt-20 lg:ml-36'>
+            {specimenFiltered?.length === 0 && specimenLoad && (
+                <div className='flex flex-col justify-center items-center mt-20'>       
+                    <div>
+                        <Typography size='m' style={{ fontSize:"20px", fontWeight:"500" }}>You have no Results Batches</Typography>
+                        <Typography size='s'>Wait for the admin of this app to submit results for demo purposes.</Typography>
+                    </div>
+                    <div className='flex justify-center items-center p-3 text-white'>
+                        <DescriptionIcon sx={{ height:"300px", width:"300px", color:"#6DB3F2" }} />   
+                    </div>  
+                </div>
+            )}
           {showRecords ? (
-            <div className='w-full flex flex-col whitespace-nowrap gap-5'>
+            <div className=' lg:w-full flex flex-col whitespace-nowrap gap-5'>
                 {repeatFormConfitmation && (
                     <Dialog onClose={closeDialog} open={open}>
                         <DialogContentText>
-                            <div className='flex flex-col justify-center items-center py-16 px-5 gap-10'>
-                                <div className='text-center'>
+                            <div className='flex flex-col justify-center items-center py-16 px-5 gap-10 relative'>
+                                <div className='text-center mt-5'>
                                     <Typography>
-                                        Are you sure you want to repeat the form record for this patient?
+                                        Are you sure you want to repeat the form record<br/> for this patient?
                                     </Typography>
+                                </div>
+                                <div className='absolute right-2 top-2'>
+                                    <IconButton onClick={closeDialog}>
+                                        <HighlightOffRoundedIcon/>
+                                    </IconButton>
+                                    
                                 </div>
                                 <div className='flex gap-10'>
                                     <Button
@@ -162,7 +169,7 @@ const Results = () => {
                 <div className='text-left'>
                     <Typography variant='h5'>Results (by Mother&apos;s Name)</Typography>
                 </div>
-                <div className='self-end'>
+                <div className='self-end mt-10 lg:mt-0'>
                     <TextField
                         label="Search by Results"
                         variant="standard"
@@ -203,10 +210,10 @@ const Results = () => {
 
                         return (
                         <IconButton key={index} onClick={(e) => repeatFormDialog(e, index)}>
-                            <Card key={index} elevation={4}>
-                                <CardContent className='flex flex-col text-left lg:w-full'>
+                            <Card key={index} elevation={4} sx={{ width:"330px" }}>
+                                <CardContent className='flex flex-col text-left'>
                                     <Typography variant='h6'>{mother}</Typography>
-                                    <div className='flex mt-5 space-x-8 pl-5'>
+                                    <div className='flex mt-5 space-x-8 pl-5 lg:space-x-9 lg:pl-0'>
                                         <div className='whitespace-nowrap'>
                                             <Typography>Birthday<br />{formattedDate}</Typography>
                                         </div>
@@ -214,7 +221,7 @@ const Results = () => {
                                             <Typography>Sex<br />{record?.sex}</Typography>
                                         </div>
                                         <div>
-                                            <Typography>Status<br />{record?.result}</Typography>
+                                            <Typography>Result<br />{record?.result}</Typography>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -225,6 +232,7 @@ const Results = () => {
                 </div>
             </div>
           ) :
+            specimenFiltered?.length > 0 &&
             <Box sx={{ height: '80vh', display: 'flex', alignItems: 'center' }}>
               <CircularProgress />
             </Box>

@@ -73,7 +73,6 @@ const CourierSample = () => {
                 {showRecords ? (
                 <div className='flex flex-col gap-10'>
                     <div className='text-left'>
-                    {/* <Typography variant='h5'>Patients (by Mother&apos;s Name)</Typography> */}
                     {filteredCourier.map((c, index) => {
                             const courierTrackingNumber = `${c.courier}-${c.tracking_number}`;
                             return (

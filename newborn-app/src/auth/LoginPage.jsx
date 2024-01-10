@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { TextField, Button, Container, Box, Paper, Grid, InputAdornment, IconButton } from '@mui/material';
+import { TextField, Button, Container, Box, Paper, Grid, InputAdornment, IconButton, Typography } from '@mui/material';
 import { Visibility, VisibilityOff, Lock } from '@mui/icons-material';
 import MyLogo from "../assets/my-logo.png"
 import ApiCall from "./ApiCall";
@@ -12,9 +12,11 @@ const { http, setToken } = ApiCall();
   const [emptyPassword, setEmptyPassword] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState(null);
+  const [submitTrigger, setSubmitTrigger] = useState(false);
 
   const handleLogin = () => {
     setError(null);
+    setSubmitTrigger(!submitTrigger);
     http.post('/auth/login', { email: username, password: password })
       .then((res) => {
         setToken(res.data.user, res.data.access_token);
@@ -79,7 +81,7 @@ const { http, setToken } = ApiCall();
                 src={MyLogo}
                 
             />
-            {!emptyUsername && !emptyPassword && (
+            {!emptyUsername && !emptyPassword && submitTrigger && (
               <div className='text-start'>
                 {<p style={{ color: "#BD271E" }}>{error}</p>} 
               </div>
@@ -92,7 +94,10 @@ const { http, setToken } = ApiCall();
                 label="Username"
                 fullWidth
                 value={username}
-                onChange={(e) => setUsername(e.target.value === '' ? null : e.target.value)}
+                onChange={(e) => {
+                  setUsername(e.target.value === '' ? null : e.target.value);
+                  setSubmitTrigger(false);
+                }}
               />
               <div className='text-start'>
                 {<p style={{ color: "#BD271E" }}>{emptyUsername}</p>} 
@@ -105,7 +110,10 @@ const { http, setToken } = ApiCall();
                 type={showPassword ? 'text' : 'password'}
                 fullWidth
                 value={password}
-                onChange={(e) => setPassword(e.target.value === '' ? null : e.target.value)}
+                onChange={(e) => {
+                  setPassword(e.target.value === '' ? null : e.target.value);
+                  setSubmitTrigger(false);
+                }}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -126,6 +134,14 @@ const { http, setToken } = ApiCall();
               </div>
             </Grid>
           </Grid>
+
+          <Typography sx={{ marginTop: "20px", textAlign:"end" }}>
+              <a href='/register' style={{ color: 'blue', textDecoration: 'underline', alignSelf: "end" }}>
+                Don&apos;t have an account yet?
+              </a>
+          </Typography>
+
+          
           <Button
             type="button"
             fullWidth

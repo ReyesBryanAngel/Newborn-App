@@ -17,10 +17,16 @@ import {
     Grow,
     ClickAwayListener,
     Paper,
-    MenuList
-} from "@mui/material";
+    MenuList,
+    Dialog,
+    DialogContentText,
+    TextField,
+    DialogContent,
+} from "@mui/material"
+// import { makeStyles } from "@mui/styles";
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import MenuIcon from '@mui/icons-material/Menu';
+import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import  { menuItems, navigatorFunction } from "./SidebarLinks";
 import { useNavigate } from 'react-router-dom';
@@ -32,8 +38,21 @@ import { useData } from '../context/DataProvider';
 import dayjs from 'dayjs';
 import 'dayjs/locale/en';
 
+// const useStyles = makeStyles((theme) => ({
+//     div: {
+//       display: 'flex',
+//       flexDirection: 'column',
+//       gap: theme.spacing(2),
+//       minWidth: 300,
+//       position: "relative"
+//     },
+//   }));
+
 const Header = () => {
+    // const classes = useStyles();
     const [avatar, setAvatar] = useState(null);
+    const [profileInfo, setProfileInfo] = useState({firstName:"", lastName:"", email:""})
+    const [profile, setProfile] = useState(false);
     const {token, logout, http, user} = ApiCall();
     const [isDrawerOpen, setDrawerOpen] = useState(false);
     const [anchorEl, setAnchorEl] = useState(false);
@@ -41,10 +60,10 @@ const Header = () => {
     const [notificationCount, setNotificationCount] = useState(0);
     const [results, setResults] = useState([]);
     const [badgeOpener, setBadgeOpener] = useState(false);
-    const { setSpecimenFiltered, setGoToClicked, specimenFiltered } = useData();
+    const { setSpecimenFiltered, setGoToClicked } = useData();
     const anchorRef = useRef(null);
 
-    const {data, isLoading } = useQuery({
+    useQuery({
         queryKey: ["specimen"],
         enabled: !specimenLoad,
         retryDelay: 500,
@@ -85,13 +104,13 @@ const Header = () => {
 
     useEffect(() => {
         if (user) {
-            const { name, last_name } = user;
+            const { name, last_name, email } = user;
             const nameInitial = name.charAt(0);
             const lasNameInitial = last_name.charAt(0);
             const avatarInitial = `${nameInitial}${lasNameInitial}`
             setAvatar(avatarInitial);
+            setProfileInfo({firstName:name, lastName:last_name, email:email})
         }
-        console.log(specimenFiltered);
     }, [user])
 
     const open = Boolean(anchorEl);
@@ -105,32 +124,34 @@ const Header = () => {
     const openBadge = () => {
         setBadgeOpener((prevOpen) => !prevOpen);
     };
+    const closeDialog = () => {
+        setProfile(false);
+    }
 
     const viewInResult = async(e, index) => {
-        const specimenToUpdate = data[index];
-        if (specimenToUpdate?.result !== null && specimenToUpdate?.viewed === 0) {
-            const updatedSpecimen = {
-                    ...specimenToUpdate,
-                        viewed: 1,
-            };
-            const updatedSpecimensArray = data.filter(item =>
-                item.id === specimenToUpdate.id
-            );
-    
-            console.log(updatedSpecimensArray);
-    
-           
-            await http.put(`v1/specimens/${specimenToUpdate.id}`, updatedSpecimen)
-            .then((res) => {
-                navigate("/results");
-                setSpecimenFiltered(updatedSpecimensArray);
-                setNotificationCount(updatedSpecimensArray?.length);
-                setGoToClicked(true);
-                setBadgeOpener(false);
-            }).catch((e) => {
-                console.error(e);
-            });   
-        }
+        const specimenToUpdate = results[index];
+        const encapsulateToArray = [specimenToUpdate];
+        encapsulateToArray?.map(async (item) => {
+            if (item.result !== null && !item.viewed) {
+                const updatedSpecimen = {
+                    ...item,
+                    viewed: 1,
+                };
+                await http.put(`v1/specimens/${item.id}`, updatedSpecimen)
+                .then((res) => {
+                    if (res?.status) {
+                        setSpecimenFiltered(encapsulateToArray);
+                        navigate("/results");
+                        setGoToClicked(true);
+                        setBadgeOpener(false);
+                        notificationCount !== 0 && setNotificationCount(notificationCount-1);
+                    }
+                }).catch((e) => {
+                    console.error(e);
+                });
+            }
+        })
+        
     }
 
     const handleClose = (event) => {
@@ -161,6 +182,54 @@ const Header = () => {
 
     return (
         <div className={`fixed w-full top-0 bg-blue-100 left-1/2 transform -translate-x-1/2 z-10 pr-5 h-16`}>
+            <Dialog 
+                onClose={closeDialog} 
+                open={profile}
+            >
+                <DialogContent>
+                    <div className='absolute right-0 top-0'>
+                        <IconButton onClick={closeDialog}>
+                            <HighlightOffRoundedIcon/>
+                        </IconButton>
+                    </div>
+                    <div className="flex flex-col min-w-300 py-20 relative">
+                        <div className='px-3 whitespace-nowrap'>
+                            <div>
+                                <div className='flex justify-between gap-5'>
+                                    <Typography sx={{ display:"flex", alignItems:"center", gap:"10px" }}>
+                                        First Name:
+                                        <TextField
+                                            disabled={true}
+                                            variant='standard'
+                                            className='w-full'
+                                            value={profileInfo.firstName}
+                                        />
+                                    </Typography>
+                                    <Typography sx={{ display:"flex", alignItems:"center", gap:"10px" }}>
+                                        Last Name:
+                                        <TextField
+                                            disabled={true}
+                                            variant='standard'
+                                            className='w-full'
+                                            value={profileInfo.lastName}
+                                        />
+                                    </Typography>
+                                </div>
+                                <Typography sx={{ display:"flex", alignItems:"center", gap:"10px", marginTop:"30px"}}>
+                                    Email Address:
+                                    <TextField
+                                        disabled={true}
+                                        variant='standard'
+                                        className='w-full'
+                                        value={profileInfo.email}
+                                    />
+                                </Typography>
+                            </div>
+                            
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
             <Toolbar className='flex justify-between items-center'>
                 <div className='flex items-center'>
                     <Box
@@ -281,7 +350,7 @@ const Header = () => {
                                 'aria-labelledby': 'basic-button',
                             }}
                         >
-                            <MenuItem>
+                            <MenuItem onClick={() => {setProfile(true)}}>
                                 <ListItemIcon>
                                 <PermIdentityIcon fontSize="small" />
                                 </ListItemIcon>

@@ -1,6 +1,5 @@
 import * as yup from 'yup';
 import { useFormik } from 'formik';
-import ApiCall from '../auth/ApiCall';
 
 export const specimenDataFetcher = (res) => {
   const resData = res?.data?.samples;

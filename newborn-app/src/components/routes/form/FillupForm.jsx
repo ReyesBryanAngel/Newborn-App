@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import CustomCheckbox from '../../CustomCheckBox';
 import { 
     Card,
@@ -8,6 +8,8 @@ import {
     FormControlLabel,
     Checkbox
 } from "@mui/material";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import InputField from '../../InputField';
 import { useNavigate } from "react-router-dom";
 import { UserFormik } from '../../FormikSetter';
@@ -24,19 +26,12 @@ import dayjs from "dayjs";
 
 const FillupForm = () => {
     const navigate = useNavigate();
-    const { specimenData, dispatch, setFeedingValues, feedingValues, createSpecimen, setCreateSpecimen } = useData();
+    const { setFeedingValues, feedingValues, setCreateSpecimen } = useData();
+    const [openSnackBar, setOpenSnackBar] = useState(false);
     const [selectedFeedings, setSelectedFeedings] = useState([]);
-    const [snackBarInfo, setSnackBarInfo] = useState(false);
-    const [response, setResponse] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(null);
     const {http} = ApiCall();
-    const SpecimenForm = UserFormik (
-        specimenData, 
-        dispatch, 
-        navigate, 
-        createSpecimen,
-        feedingValues, 
-        setCreateSpecimen, 
-    );
+    const SpecimenForm = UserFormik();
 
     const onCheckboxChange = (index) => {
         const selectedFeeding = Feedings[index].value;
@@ -49,27 +44,47 @@ const FillupForm = () => {
         setFeedingValues([...selectedFeedings, selectedFeeding]);
     };
 
-    useEffect(() => {console.log(SpecimenForm?.values?.practitioner_profession_other)})
+    const closeSnackBar = () => {
+        setOpenSnackBar(false);
+      }
 
     const submitSepcimen = async() => {
-        console.log(SpecimenForm?.values);
         await http.post('/v1/specimens', SpecimenForm?.values)
             .then((res) => {
+                setSuccessMessage(res?.data?.message);
                 if (res?.data?.status === 200) {
-                    console.log(res)
                     http.post(`v1/specimens/feeding/${res?.data?.specimen_id}`, {feedings: feedingValues})
-                    navigate("/")
+                    setOpenSnackBar(true);
+                    setTimeout(() => {
+                        navigate("/");
+                    }, 5000)
                     setCreateSpecimen(false);
                 }
          })
         .catch((e) => {
-            setSnackBarInfo(true);
-            setResponse(e.response?.data?.message)
+            console.error(e);
         });    
     }
 
     return (
         <div className='flex items-center justify-center mt-16 text-left'>
+            {openSnackBar && (
+                <Snackbar 
+                    open={open} 
+                    autoHideDuration={5000} 
+                    onClose={closeSnackBar} 
+                    anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                >
+                    <MuiAlert
+                        elevation={6}
+                        variant="filled"
+                        onClose={closeSnackBar}
+                        severity="success"
+                    >
+                    {successMessage}
+                    </MuiAlert>
+                </Snackbar>
+            )}
             <form onSubmit={SpecimenForm.handleSubmit}>
                 <Card elevation={4} className='px-10 py-10 lg:ml-64 mt-5 flex flex-col lg:px-28 md:px-20'>
                     <div className='mb-9'>
@@ -283,7 +298,7 @@ const FillupForm = () => {
                         </div>
                         <div className='mb-9'>
                             <InputField
-                                title="Age of Gestation"
+                                title="Age of Gestation in Weeks"
                                 id="age_of_gestation_in_weeks"
                                 name="age_of_gestation_in_weeks"
                                 values={SpecimenForm?.values?.age_of_gestation_in_weeks}
