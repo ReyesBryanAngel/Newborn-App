@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from "@tanstack/react-query";
 import { Card, Typography, CardContent, Checkbox, Button, IconButton, CircularProgress, Box } from "@mui/material";
@@ -24,14 +24,18 @@ const ReviewSample = () => {
                 .get(`v1/specimens/all-samples`)
                 .then((res) => {
                     setSpecimenLoad(true);
-
-                    const filteredSamples = res?.data?.filter(patient => patient.specimen_status === "Pending");
-                    setPendingSamples(filteredSamples);
-                    const initialCheckedList = filteredSamples.map((patient) => patient.checked);
-                    setIsCheckedList(initialCheckedList);
                     return res?.data;
                 })
     })
+
+    useEffect(() => {
+        if (!isLoading && data) {
+            const filteredSamples = data.filter(patient => patient.specimen_status === "Pending");
+            setPendingSamples(filteredSamples);
+            const initialCheckedList = filteredSamples.map((patient) => patient.checked);
+            setIsCheckedList(initialCheckedList);
+        }
+    }, [data, isLoading]);
 
     const [isCheckedList, setIsCheckedList] = useState([]);
     const onCheckboxChange = (index) => {
@@ -39,6 +43,8 @@ const ReviewSample = () => {
       newIsCheckedList[index] = !newIsCheckedList[index];
       setIsCheckedList(newIsCheckedList);
     }
+
+    // useEffect(()=>console.log(isCheckedList));
 
     const logCourierInformation  = () => {
         const filteredData = pendingSamples.map((patient, index) => ({

@@ -4,6 +4,11 @@ import { useFormik } from 'formik';
 export const specimenDataFetcher = (res) => {
   const resData = res?.data?.samples;
 
+  const feedingNames = resData?.feeding?.filter((selected) => 
+  selected.is_selected === 1).map((f) => 
+  f.feeding_name
+);
+
   return {
     samples: {
       type_of_sample: resData?.type_of_sample ?? "",
@@ -17,6 +22,7 @@ export const specimenDataFetcher = (res) => {
       babys_weight_in_grams: resData?.babys_weight_in_grams ?? "",
       age_of_gestation_in_weeks: resData?.age_of_gestation_in_weeks ?? "",
       sex: resData?.sex ?? "",
+      feeding: feedingNames ?? [],
       specimens: resData?.specimens ?? "",
       specimen_status: resData?.specimen_status ?? "",
       place_of_collection: resData?.place_of_collection ?? "",
@@ -47,6 +53,7 @@ export const UserFormik = () => {
       mothers_first_name: '',
       date_and_time_of_birth: null,
       sex: '',
+      feeding: [],
       babys_weight_in_grams: '',
       date_and_time_of_collection: null,
       age_of_gestation_in_weeks: '',

@@ -16,6 +16,7 @@ import CourierSample from './components/routes/courier/CourierSample';
 import ReviewSample from './components/routes/form/ReviewSample';
 import CourierInformationForm from './components/routes/form/CourierInformationForm';
 import RepeatForm from './components/routes/form/RepeatForm';
+import UpdateForm from './components/routes/form/UpdateForm';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -84,6 +85,14 @@ function App() {
               <RouteProtector isLoggedIn={isLoggedIn}>
                 <ApplicationLayout>
                   <FillupForm />
+                </ApplicationLayout>
+              </RouteProtector>
+              } 
+            />
+            <Route path="/update-form" element={
+              <RouteProtector isLoggedIn={isLoggedIn}>
+                <ApplicationLayout>
+                  <UpdateForm />
                 </ApplicationLayout>
               </RouteProtector>
               } 

@@ -19,11 +19,9 @@ import {
     Paper,
     MenuList,
     Dialog,
-    DialogContentText,
     TextField,
     DialogContent,
-} from "@mui/material"
-// import { makeStyles } from "@mui/styles";
+} from "@mui/material";
 import PermIdentityIcon from '@mui/icons-material/PermIdentity';
 import MenuIcon from '@mui/icons-material/Menu';
 import HighlightOffRoundedIcon from "@mui/icons-material/HighlightOffRounded";
@@ -38,18 +36,7 @@ import { useData } from '../context/DataProvider';
 import dayjs from 'dayjs';
 import 'dayjs/locale/en';
 
-// const useStyles = makeStyles((theme) => ({
-//     div: {
-//       display: 'flex',
-//       flexDirection: 'column',
-//       gap: theme.spacing(2),
-//       minWidth: 300,
-//       position: "relative"
-//     },
-//   }));
-
 const Header = () => {
-    // const classes = useStyles();
     const [avatar, setAvatar] = useState(null);
     const [profileInfo, setProfileInfo] = useState({firstName:"", lastName:"", email:""})
     const [profile, setProfile] = useState(false);
@@ -249,17 +236,19 @@ const Header = () => {
                                 <MenuIcon />
                             </IconButton>
                         )}
-                        <IconButton 
-                            onClick={openBadge} 
-                            ref={anchorRef}
-                            aria-controls={badgeOpener ? 'composition-menu' : undefined}
-                            aria-expanded={badgeOpener ? 'true' : undefined}
-                            aria-haspopup="true"
-                        >
-                            <Badge badgeContent={notificationCount} color="error">
-                                <NotificationsNoneIcon fontSize='medium' color='primary' />
-                            </Badge>
-                        </IconButton>
+                        <Tooltip title='Notifications'>
+                            <IconButton 
+                                onClick={openBadge} 
+                                ref={anchorRef}
+                                aria-controls={badgeOpener ? 'composition-menu' : undefined}
+                                aria-expanded={badgeOpener ? 'true' : undefined}
+                                aria-haspopup="true"
+                            >
+                                <Badge badgeContent={notificationCount} color="error">
+                                    <NotificationsNoneIcon fontSize='medium' color='primary' />
+                                </Badge>
+                            </IconButton>
+                        </Tooltip>
                         <Popper
                             open={badgeOpener}
                             anchorEl={anchorRef.current}
@@ -282,48 +271,58 @@ const Header = () => {
                                             autoFocusItem={badgeOpener} 
                                             onKeyDown={handleListKeyDown}
                                         >
+                                        {!results?.length > 0 ? (
                                             <div className='text-start m-2'>
-                                                <Typography>Notifications</Typography>
+                                                <Typography>No notifications yet</Typography>
                                             </div>
-                                            {results?.map((r, index) => {
-                                                const mother = `${r?.baby_last_name}, ${r?.mothers_first_name}`;
-                                                const resultColorMap = {
-                                                    'Elevated': 'bg-red-500',
-                                                    'Normal': 'bg-green-500',
-                                                    'Inadequate': 'bg-yellow-500',
-                                                };
-                                                const border = "1px solid #e2e8f0";
-                                                const bgColorClass = resultColorMap[r?.result] || 'bg-gray-500';
-                                                const timeElapsed = dayjs().diff(dayjs(r?.updated_at), 'minute');
-                                                let timeAgoText = '';
-                                                if (timeElapsed < 60) {
-                                                    timeAgoText = `${timeElapsed} min ago`;
-                                                } else if (timeElapsed < 1440) {
-                                                    const hoursElapsed = Math.floor(timeElapsed / 60);
-                                                    timeAgoText = `${hoursElapsed} ${hoursElapsed === 1 ? 'hour' : 'hours'} ago`;
-                                                } else {
-                                                    const daysElapsed = Math.floor(timeElapsed / 1440);
-                                                    timeAgoText = `${daysElapsed} ${daysElapsed === 1 ? 'day' : 'days'} ago`;
-                                                }
-                                                return (
-                                                    <MenuItem 
-                                                        onClick={(e) => {
-                                                            viewInResult(e, index)
-                                                        }} 
-                                                        key={index} 
-                                                        sx={{ borderTop: {border}, borderBottom: {border} }}
-                                                    >
-                                                        <div className='flex justify-center gap-10'>
-                                                            <div className={`w-4 h-4 rounded-full ${bgColorClass}`}></div>
-                                                            <div className='flex flex-col gap-5 text-start'>
-                                                                <Typography>{r?.result.split(" ")[0]} Findings</Typography>
-                                                                <Typography>{mother}</Typography>
+                                        ) :
+                                            <>
+                                                <div className='text-start m-2'>
+                                                    <Typography>Notifications</Typography>
+                                                </div>
+                                                {results?.map((r, index) => {
+                                                    const mother = `${r?.baby_last_name}, ${r?.mothers_first_name}`;
+                                                    const resultColorMap = {
+                                                        'Elevated': 'bg-red-500',
+                                                        'Normal': 'bg-green-500',
+                                                        'Inadequate': 'bg-yellow-500',
+                                                    };
+                                                    const border = "1px solid #e2e8f0";
+                                                    const bgColorClass = resultColorMap[r?.result] || 'bg-gray-500';
+                                                    const timeElapsed = dayjs().diff(dayjs(r?.updated_at), 'minute');
+                                                    let timeAgoText = '';
+                                                    if (timeElapsed < 60) {
+                                                        timeAgoText = `${timeElapsed} min ago`;
+                                                    } else if (timeElapsed < 1440) {
+                                                        const hoursElapsed = Math.floor(timeElapsed / 60);
+                                                        timeAgoText = `${hoursElapsed} ${hoursElapsed === 1 ? 'hour' : 'hours'} ago`;
+                                                    } else {
+                                                        const daysElapsed = Math.floor(timeElapsed / 1440);
+                                                        timeAgoText = `${daysElapsed} ${daysElapsed === 1 ? 'day' : 'days'} ago`;
+                                                    }
+                                                    return (
+                                                        <MenuItem 
+                                                            onClick={(e) => {
+                                                                viewInResult(e, index)
+                                                            }} 
+                                                            key={index} 
+                                                            sx={{ borderTop: {border}, borderBottom: {border} }}
+                                                        >
+                                                            <div className='flex justify-center gap-10'>
+                                                                <div className={`w-4 h-4 rounded-full ${bgColorClass}`}></div>
+                                                                <div className='flex flex-col gap-5 text-start'>
+                                                                    <Typography>{r?.result.split(" ")[0]} Findings</Typography>
+                                                                    <Typography>{mother}</Typography>
+                                                                </div>
+                                                                <div>{timeAgoText}</div>
                                                             </div>
-                                                            <div>{timeAgoText}</div>
-                                                        </div>
-                                                    </MenuItem>
-                                                )
-                                            })}
+                                                        </MenuItem>
+                                                    )
+                                                })}
+                                            </>
+                                            
+                                        }
+                                            
                                         </MenuList>
                                         </ClickAwayListener>
                                     </Paper>
@@ -331,7 +330,7 @@ const Header = () => {
                             )}
                         </Popper>
                             
-                        <Tooltip onClick={openAvatar} sx={{ position:"relative" }}>
+                        <Tooltip title='Profile' onClick={openAvatar} sx={{ position:"relative" }}>
                             <IconButton>
                                 <div className='flex justify-center items-center rounded-full w-9 h-9 p-3 border-2 text-white bg-blue-300'>
                                     <div className='flex text-xs'>

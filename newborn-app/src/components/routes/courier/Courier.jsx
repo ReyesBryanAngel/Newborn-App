@@ -3,6 +3,8 @@ import ApiCall from '../../../auth/ApiCall';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from "@tanstack/react-query";
 import dayjs from 'dayjs';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import { 
     Card, 
     Typography, 
@@ -24,7 +26,9 @@ const Courier = () => {
     const [sentSpecimens, setSentSpecimens] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [allSamplesLoad, setAllSamplesLoad] = useState(false);
-    const [couriersLoad, setCouriersLoad] = useState(false);    
+    const [couriersLoad, setCouriersLoad] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [openSnackBar, setOpenSnackBar] = useState(false);
 
     const { data: allSamples, isLoading: allSampleLoading } = useQuery({
         queryKey: ["sample"],
@@ -67,9 +71,14 @@ const Courier = () => {
                 navigate("/courier-sample");
             }
         } catch (e) {
-            console.error(e.response?.data?.message);
+            setOpenSnackBar(true);
+            setErrorMessage(e.response?.data?.message);
         }
     }
+
+    const closeSnackBar = () => {
+        setOpenSnackBar(false);
+      }
 
     const showRecords  = !allSampleLoading && allSamples && !courierLoading && couriers;
     const filteredCouriers = couriers?.filter((c) =>
@@ -78,6 +87,23 @@ const Courier = () => {
 
     return (
     <div className='flex items-center justify-center mt-16 lg:ml-36'>
+        {openSnackBar && (
+            <Snackbar 
+                open={open} 
+                autoHideDuration={5000} 
+                onClose={closeSnackBar} 
+                anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            >
+                <MuiAlert
+                    elevation={6}
+                    variant="filled"
+                    onClose={closeSnackBar}
+                    severity="error"
+                >
+                {errorMessage}
+                </MuiAlert>
+            </Snackbar>
+        )}
         { pendingSpecimens?.length === 0 && sentSpecimens?.length === 0 && allSamplesLoad && (
             <div className='flex flex-col justify-center items-center mt-20'>       
                 <div>
@@ -90,79 +116,86 @@ const Courier = () => {
             </div>
         )}
         {showRecords ? (
-          <div className='flex lg:w-full flex-col'>
-            <div className='text-left ml-5 lg:ml-0 m-5'>
-              <Typography variant='h5'>Courier</Typography>
-            </div>
-            <div className='self-end'>
-                <TextField
-                label="Search Tracking Number"
-                variant="standard"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className='mb-3'
-                InputProps={{
-                    endAdornment: (
-                    <InputAdornment>
-                        <SearchIcon />
-                    </InputAdornment>
-                    
-                    ),
-                }}
-                />
-             </div>
-            {pendingSpecimens?.length !== 0 &&(
-                <div className='self-end ml-2 mt-10 flex text-white bg-blue-300'>
-                    <Button
-                        onClick={() => {
-                            navigate("/review-sample-form");
-                        }}
-                        size='medium'
-                        sx={{ 
-                            color: "white",
-                            padding: "10px",
-                            "&:hover": {
-                                bgcolor: "rgba(127, 177, 233, var(--tw-bg-opacity))",
-                            },
-                            textTransform: "none",
-                        }}
-                    >
-                        You have {pendingSpecimens?.length} unsent samples
-                    </Button>
-                </div>
-            )}
-            <div className='w-full grid gap-10 md:grid-cols-2 lg:grid-cols-3 mt-5'>
-              {filteredCouriers?.map((c, index) => {
-                const dateOfPickup = new Date(c.date_of_pickup);
-                const formattedDate = dayjs(dateOfPickup).format("YYYY-MM-DD");
-                const track = `${c.courier}-${c.tracking_number}`;
-                const countMatchingSamples = (trackingNumber) => {
-                    return sentSpecimens?.filter(sample => sample.tracking_number === trackingNumber).length;
-                };
-                const matchingSampleCount = countMatchingSamples(c.tracking_number);
-                
-                return (
-                    <IconButton key={index} onClick={() => {showCourierSample(c.tracking_number)}}>
-                        <Card key={index} elevation={4} sx={{ width:"330px" }}>
-                            <CardContent className='flex flex-col text-left'>
-                                <Typography variant='h6'>{track}</Typography>
-                                <div className='flex mt-5 space-x-8 pl-5 lg:space-x-9 lg:pl-0'>
-                                    <div className='whitespace-nowrap'>
-                                    <Typography>Date of Pickup<br />{formattedDate}</Typography>
-                                    </div>
-                                    <div>
-                                    <Typography>Samples<br />{matchingSampleCount}</Typography>
-                                    </div>
-                                    <div>
-                                    <Typography>Status<br />{c?.result}</Typography>
-                                    </div>
+          <div className={`flex ${pendingSpecimens?.length !== 0 || filteredCouriers?.length === 0 ? 'lg:w-full' : ''} flex-col`}>
+            {allSamples?.length !== 0 && (
+                 <>
+                    <div className='flex gap-2 md:gap-56 h-56 justify-between'>
+                        <div className='text-left ml-5 lg:ml-0 m-5 '>
+                            <Typography variant='h5'>Courier</Typography>
+                        </div>
+                        <div className='mt-20'>
+                            <div className='self-end'>
+                                <TextField
+                                    label="Search Tracking Number"
+                                    variant="standard"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className='mb-3'
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment>
+                                                <SearchIcon />
+                                            </InputAdornment>
+                                        ),
+                                    }} 
+                                />
+                            </div>
+                            {pendingSpecimens?.length !== 0 &&(
+                                <div className='self-end ml-2 mt-10 flex text-white bg-blue-300'>
+                                    <Button
+                                        onClick={() => {
+                                            navigate("/review-sample-form");
+                                        }}
+                                        size='medium'
+                                        sx={{
+                                            whiteSpace:"nowrap",
+                                            color: "white",
+                                            padding: "10px",
+                                            textTransform: "none",
+                                        }}
+                                    >
+                                        You have {pendingSpecimens?.length} unsent samples
+                                    </Button>
                                 </div>
-                            </CardContent>
-                        </Card>
-                    </IconButton>
-                );
-              })}
-            </div>
+                            )}
+                        </div>
+                    </div>
+                    
+                    
+                    <div className='w-full grid gap-10 md:grid-cols-2 lg:grid-cols-3 mt-5'>
+                    {filteredCouriers?.map((c, index) => {
+                        const dateOfPickup = new Date(c.date_of_pickup);
+                        const formattedDate = dayjs(dateOfPickup).format("YYYY-MM-DD");
+                        const track = `${c.courier}-${c.tracking_number}`;
+                        const countMatchingSamples = (trackingNumber) => {
+                            return sentSpecimens?.filter(sample => sample.tracking_number === trackingNumber).length;
+                        };
+                        const matchingSampleCount = countMatchingSamples(c.tracking_number);
+                        
+                        return (
+                            <IconButton key={index} onClick={() => {showCourierSample(c.tracking_number)}}>
+                                <Card elevation={4} sx={{ width:"330px" }}>
+                                    <CardContent className='flex flex-col text-left'>
+                                        <Typography variant='h6'>{track}</Typography>
+                                        <div className='flex mt-5 space-x-8 pl-5 lg:space-x-9 lg:pl-0'>
+                                            <div className='whitespace-nowrap'>
+                                            <Typography>Date of Pickup<br />{formattedDate}</Typography>
+                                            </div>
+                                            <div>
+                                            <Typography>Samples<br />{matchingSampleCount}</Typography>
+                                            </div>
+                                            <div>
+                                            <Typography>Status<br />{c?.result}</Typography>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </IconButton>
+                        );
+                    })}
+                    </div>
+                </>
+            )}
           </div>
         ) :
             couriers?.length > 0 &&

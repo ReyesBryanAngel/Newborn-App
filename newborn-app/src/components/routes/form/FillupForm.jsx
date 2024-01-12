@@ -46,7 +46,7 @@ const FillupForm = () => {
 
     const closeSnackBar = () => {
         setOpenSnackBar(false);
-      }
+    }
 
     const submitSepcimen = async() => {
         await http.post('/v1/specimens', SpecimenForm?.values)
@@ -537,7 +537,7 @@ const FillupForm = () => {
                             <Autocomplete
                                 options={BabyStatus}
                                 getOptionLabel={(option) => option.label}
-                                value={MultipleBirths.find((data) => data.value === SpecimenForm?.values?.baby_status)}
+                                value={BabyStatus.find((data) => data.value === SpecimenForm?.values?.baby_status)}
                                 onChange={(event, value) => {
                                     SpecimenForm?.setFieldValue("baby_status", value?.value)
                                 }}

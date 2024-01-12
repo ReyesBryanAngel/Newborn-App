@@ -98,7 +98,7 @@ const LoginPage = () => {
                {successMessage}
             </MuiAlert>
         </Snackbar>
-        )}
+      )}
       <Container 
         component="main" 
         maxWidth="xs" 
