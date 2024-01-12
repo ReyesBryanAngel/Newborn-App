@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { jwtDecode } from "jwt-decode";
 
 function ApiCall () {
     const navigate = useNavigate();
@@ -30,21 +31,25 @@ function ApiCall () {
     }
 
     const checkTokenExpiration = () => {
-      const currentToken = getToken();
-  
-      if (currentToken) {
-        const expirationTime = new Date(currentToken.exp * 1000);
-        const currentTime = new Date();
-  
-        if (currentTime >= expirationTime) {
-          logout();
+        const currentToken = getToken();
+      
+        if (currentToken) {
+          try {
+            const decodedToken = jwtDecode(currentToken);
+            const expirationTime = decodedToken.exp * 1000;
+            const currentTime = new Date().getTime();
+            if (currentTime >= expirationTime) {
+              logout();
+            }
+          } catch (error) {
+            console.error("Error decoding token:", error);
+          }
         }
-      }
-    };
-  
-    useEffect(() => {
-      checkTokenExpiration();
-    }, [token]);
+      };
+
+      useEffect(() => {
+        checkTokenExpiration();
+      })
 
     const logout = () => {
         sessionStorage.clear();

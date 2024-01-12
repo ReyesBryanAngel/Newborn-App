@@ -86,7 +86,7 @@ const Courier = () => {
     );
 
     return (
-    <div className='flex items-center justify-center mt-16 lg:ml-36'>
+    <div className='flex items-center justify-center mt-16 lg:ml-44'>
         {openSnackBar && (
             <Snackbar 
                 open={open} 
@@ -119,11 +119,11 @@ const Courier = () => {
           <div className={`flex ${pendingSpecimens?.length !== 0 || filteredCouriers?.length === 0 ? 'lg:w-full' : ''} flex-col`}>
             {allSamples?.length !== 0 && (
                  <>
-                    <div className='flex gap-2 md:gap-56 h-56 justify-between'>
+                    <div className='flex gap-2 md:gap-56 h-56 justify-between lg:ml-20'>
                         <div className='text-left ml-5 lg:ml-0 m-5 '>
                             <Typography variant='h5'>Courier</Typography>
                         </div>
-                        <div className='mt-20'>
+                        <div className='mt-16 lg:mt-10'>
                             <div className='self-end'>
                                 <TextField
                                     label="Search Tracking Number"
@@ -162,7 +162,7 @@ const Courier = () => {
                     </div>
                     
                     
-                    <div className='w-full grid gap-10 md:grid-cols-2 lg:grid-cols-3 mt-5'>
+                    <div className='grid gap-10 md:grid-cols-2 xl:grid-cols-3 lg:ml-24'>
                     {filteredCouriers?.map((c, index) => {
                         const dateOfPickup = new Date(c.date_of_pickup);
                         const formattedDate = dayjs(dateOfPickup).format("YYYY-MM-DD");
@@ -174,7 +174,7 @@ const Courier = () => {
                         
                         return (
                             <IconButton key={index} onClick={() => {showCourierSample(c.tracking_number)}}>
-                                <Card elevation={4} sx={{ width:"330px" }}>
+                                <Card elevation={4} sx={{ width:"330px", flexShrink:0 }}>
                                     <CardContent className='flex flex-col text-left'>
                                         <Typography variant='h6'>{track}</Typography>
                                         <div className='flex mt-5 space-x-8 pl-5 lg:space-x-9 lg:pl-0'>

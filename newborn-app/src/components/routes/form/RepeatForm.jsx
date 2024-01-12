@@ -6,6 +6,8 @@ import {
     Box,
     CircularProgress
 } from "@mui/material";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import InputField from '../../InputField';
 import { useNavigate } from "react-router-dom";
 import { UserFormik, specimenDataFetcher } from '../../FormikSetter';
@@ -21,6 +23,8 @@ const RepeatForm = () => {
     const navigate = useNavigate();
     const {http} = ApiCall();
     const [specimenLoad, setSpecimenLoad] = useState(false);
+    const [successMessage, setSuccessMessage] = useState(null);
+    const [openSnackBar, setOpenSnackBar] = useState(false);
     const SpecimenForm = UserFormik();
 
     const { data: refreshSpecimen, isLoading: refreshSpecimenLoading } = useQuery({
@@ -50,17 +54,42 @@ const RepeatForm = () => {
         http.put(`v1/specimens/${refreshSpecimen?.samples?.id}`, newSpecimenData)
         .then((res) => {
             if (res?.data?.status === 200) {
-                navigate("/");
+                setOpenSnackBar(true);
+                setSuccessMessage(res?.data?.message);
+                setTimeout(() => {
+                    navigate("/results");
+                }, 5000)
             }
         }).catch((e) => {
             console.error(e);
         })
     }
 
+    const closeSnackBar = () => {
+        setOpenSnackBar(false);
+    }
+
     const showRecord = !refreshSpecimenLoading && refreshSpecimen;
 
     return (
         <div className='flex items-center justify-center mt-16 text-left'>
+            {openSnackBar && (
+                <Snackbar 
+                    open={open} 
+                    autoHideDuration={5000} 
+                    onClose={closeSnackBar} 
+                    anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                >
+                    <MuiAlert
+                        elevation={6}
+                        variant="filled"
+                        onClose={closeSnackBar}
+                        severity="success"
+                    >
+                    {successMessage}
+                    </MuiAlert>
+                </Snackbar>
+            )}
             {showRecord ? (
                 <form onSubmit={SpecimenForm.handleSubmit}>
                     <Card elevation={4} className='px-10 py-10 lg:ml-64 mt-5 flex flex-col lg:px-28 md:px-20'>

@@ -236,19 +236,17 @@ const Header = () => {
                                 <MenuIcon />
                             </IconButton>
                         )}
-                        <Tooltip title='Notifications'>
-                            <IconButton 
-                                onClick={openBadge} 
-                                ref={anchorRef}
-                                aria-controls={badgeOpener ? 'composition-menu' : undefined}
-                                aria-expanded={badgeOpener ? 'true' : undefined}
-                                aria-haspopup="true"
-                            >
-                                <Badge badgeContent={notificationCount} color="error">
-                                    <NotificationsNoneIcon fontSize='medium' color='primary' />
-                                </Badge>
-                            </IconButton>
-                        </Tooltip>
+                        <IconButton 
+                            onClick={openBadge} 
+                            ref={anchorRef}
+                            aria-controls={badgeOpener ? 'composition-menu' : undefined}
+                            aria-expanded={badgeOpener ? 'true' : undefined}
+                            aria-haspopup="true"
+                        >
+                            <Badge badgeContent={notificationCount} color="error">
+                                <NotificationsNoneIcon fontSize='medium' color='primary' />
+                            </Badge>
+                        </IconButton>
                         <Popper
                             open={badgeOpener}
                             anchorEl={anchorRef.current}

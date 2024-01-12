@@ -44,8 +44,6 @@ const ReviewSample = () => {
       setIsCheckedList(newIsCheckedList);
     }
 
-    // useEffect(()=>console.log(isCheckedList));
-
     const logCourierInformation  = () => {
         const filteredData = pendingSamples.map((patient, index) => ({
             ...patient,
@@ -83,14 +81,14 @@ const ReviewSample = () => {
                         <div className='text-left'>
                             <Typography variant='h5'>Send Samples</Typography>
                         </div>
-                        <div className='w-full grid gap-10 md:grid-cols-2 lg:grid-cols-3'>
+                        <div className='w-80 grid gap-10 md:grid-cols-2 md:w-full lg:grid-cols-3'>
                             {pendingSamples?.map((record, index) => {
                                 const dateOfBirth = new Date(record?.date_and_time_of_birth);
                                 const formattedDate = dayjs(dateOfBirth).format("YYYY-MM-DD");
                                 const mother = `${record?.baby_last_name}, ${record?.mothers_first_name}`;
                                 return (
                                 <Card key={index} elevation={4}>
-                                    <CardContent className='flex flex-col  lg:w-96'>
+                                    <CardContent className='flex flex-col items-start lg:w-96'>
                                         <div className='flex items-center'>
                                             <Checkbox
                                                 id={`checkbox-${index}`}
@@ -99,7 +97,7 @@ const ReviewSample = () => {
                                             />
                                             <Typography variant='h6'>{mother}</Typography>
                                         </div>
-                                        <div className='flex mt-5 space-x-16 pl-5 lg:px-10 lg:space-x-10 lg:pl-5'>
+                                        <div className='flex text-left mt-5 space-x-10 pl-5 lg:px-10 lg:space-x-10 lg:pl-5 whitespace-nowrap'>
                                             <div>
                                             <Typography>Birthday<br />{formattedDate}</Typography>
                                             </div>

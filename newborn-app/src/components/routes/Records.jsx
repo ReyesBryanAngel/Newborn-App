@@ -80,7 +80,7 @@ const Records = () => {
   const showRecords = data?.length > 0 && !isLoading;
 
   return (
-    <div className='flex items-center justify-center mt-20 lg:ml-36'>
+    <div className='flex items-center justify-center mt-20 lg:ml-52'>
         {deleteDialog && (
           <Dialog onClose={closeDialog} open={open}>
             <DialogContentText>
@@ -165,7 +165,7 @@ const Records = () => {
               }}
             />
           </div>
-          <div className='w-full grid gap-10 md:grid-cols-2 lg:grid-cols-3'>
+          <div className='grid gap-10 md:grid-cols-2 xl:grid-cols-3'>
             {filteredFetcher?.map((record, index) => {
               const dateOfBirth = new Date(record?.date_and_time_of_birth);
               const formattedDate = dayjs(dateOfBirth).format("YYYY-MM-DD");

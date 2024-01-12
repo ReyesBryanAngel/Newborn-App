@@ -8,6 +8,8 @@ import {
     Checkbox,
     Box
 } from "@mui/material";
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
@@ -17,8 +19,6 @@ import ApiCall from '../../../auth/ApiCall';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DateTimeField } from '@mui/x-date-pickers/DateTimeField';
 import { LoadingButton } from "@mui/lab";
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
 import InputField from '../../InputField';
 import Feedings from "../../../static/Feedings";
 import BabyStatus from '../../../static/BabyStatus';
@@ -64,10 +64,6 @@ const UpdateForm = () => {
         setFeedingValues([...selectedFeedings, selectedFeeding]);
     };
 
-    const closeSnackBar = () => {
-        setOpenSnackBar(false);
-    }
-
     const updateFeeding = async() => {
         http.put(`v1/specimens/update-feeding/${refreshSpecimen?.samples?.id}`, {feedings: selectedFeedings})
         .catch((e) => {
@@ -75,12 +71,11 @@ const UpdateForm = () => {
         });  
     }
 
-    useEffect(()=>console.log(MultipleBirths.find((data) => data.value === SpecimenForm?.values?.for_multiple_births)?.value));
-
     const updateSpecimen = () => {
         http.put(`v1/specimens/${refreshSpecimen?.samples?.id}`, SpecimenForm?.values)
         .then((res) => {
             if (res?.data?.status === 200) {
+                setOpenSnackBar(true);
                 setSuccessMessage(res?.data?.message);
                 updateFeeding();
                 setTimeout(() => {
@@ -88,6 +83,10 @@ const UpdateForm = () => {
                 }, 5000)
             }
         })
+    }
+
+    const closeSnackBar = () => {
+        setOpenSnackBar(false);
     }
 
     const showRecord = !refreshSpecimenLoading && refreshSpecimen;
@@ -124,11 +123,11 @@ const UpdateForm = () => {
                                 <div className='flex flex-col'>
                                     <CustomCheckbox
                                         name={"type_of_sample"}
-                                        checkBoxValue={SpecimenForm.values.type_of_sample}
-                                        firstLabel={"Initial Sample"}
-                                        firstValue={"initial sample"}
-                                        secondLabel={"Repeat Sample"}
-                                        secondValue={"repeat sample"}
+                                        checkBoxValue={SpecimenForm?.values?.type_of_sample}
+                                        firstLabel="Initial Sample"
+                                        firstValue="Initial Sample"
+                                        secondLabel="Repeat Sample"
+                                        secondValue="Repeat Sample"
                                         handleBlur={SpecimenForm.handleBlur}
                                         handleChange={SpecimenForm.handleChange}
                                     />
@@ -263,14 +262,14 @@ const UpdateForm = () => {
                             <div className='flex flex-col lg:flex-row'>
                                 <div className='flex flex-col'>
                                     <CustomCheckbox
-                                        name={"sex"}
+                                        name="sex"
                                         checkBoxValue={SpecimenForm.values.sex}
-                                        firstLabel={"Male"}
-                                        firstValue={"M"}
-                                        secondLabel={"Female"}
-                                        secondValue={"F"}
-                                        thirdLabel={"Ambiguous"}
-                                        thirdValue={"A"}
+                                        firstLabel="Male"
+                                        firstValue="M"
+                                        secondLabel="Female"
+                                        secondValue="F"
+                                        thirdLabel="Ambiguous"
+                                        thirdValue="A"
                                         handleBlur={SpecimenForm.handleBlur}
                                         handleChange={SpecimenForm.handleChange}
                                     />

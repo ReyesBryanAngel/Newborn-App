@@ -89,7 +89,7 @@ const Dashboard = () => {
     
     const showRecords = !isLoading && data;
     return (
-        <div className='flex items-center justify-center mt-24 lg:ml-36'>
+        <div className='flex items-center justify-center mt-24 lg:ml-52'>
             {showRecords ? (
                 <div className='w-full grid gap-10 md:grid-cols-2'>
                     {dashboardData?.map((data, index) => (

@@ -101,7 +101,7 @@ const Results = () => {
     const showRecords = !isLoading && specimenFiltered?.length > 0;
 
     return (
-        <div className='flex items-center justify-center mt-20 lg:ml-36'>
+        <div className='flex items-center justify-center mt-20 lg:ml-52'>
             {specimenFiltered?.length === 0 && specimenLoad && (
                 <div className='flex flex-col justify-center items-center mt-20'>       
                     <div>
@@ -114,7 +114,7 @@ const Results = () => {
                 </div>
             )}
           {showRecords ? (
-            <div className=' lg:w-full flex flex-col whitespace-nowrap gap-5'>
+            <div className='flex lg:w-full flex-col '>
                 {repeatFormConfitmation && (
                     <Dialog onClose={closeDialog} open={open}>
                         <DialogContentText>
@@ -186,7 +186,7 @@ const Results = () => {
                         }}
                     />
                 </div>
-                <div className='self-end ml-2 flex text-white bg-blue-300'>
+                <div className='self-end ml-2 flex text-white bg-blue-300 my-5'>
                     <Button
                         onClick={showAllFunction}
                         size='medium'
@@ -202,7 +202,7 @@ const Results = () => {
                         Show All Results
                     </Button>
                 </div>
-                <div className='w-full grid gap-10 md:grid-cols-2 lg:grid-cols-3'>
+                <div className='grid grid gap-10 md:grid-cols-2 xl:grid-cols-3'>
                     {filteredRecords?.map((record, index) => {
                         const dateOfBirth = new Date(record?.date_and_time_of_birth);
                         const formattedDate = dayjs(dateOfBirth).format("YYYY-MM-DD");
@@ -210,10 +210,10 @@ const Results = () => {
 
                         return (
                         <IconButton key={index} onClick={(e) => repeatFormDialog(e, index)}>
-                            <Card key={index} elevation={4} sx={{ width:"330px" }}>
+                            <Card key={index} elevation={4} sx={{ width:"320px", flexShrink: 0 }}>
                                 <CardContent className='flex flex-col text-left'>
                                     <Typography variant='h6'>{mother}</Typography>
-                                    <div className='flex mt-5 space-x-8 pl-5 lg:space-x-9 lg:pl-0'>
+                                    <div className='flex mt-5 space-x-10 pl-5'>
                                         <div className='whitespace-nowrap'>
                                             <Typography>Birthday<br />{formattedDate}</Typography>
                                         </div>
