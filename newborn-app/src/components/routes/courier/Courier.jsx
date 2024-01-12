@@ -108,7 +108,7 @@ const Courier = () => {
             <div className='flex flex-col justify-center items-center mt-20'>       
                 <div>
                     <Typography size='m' style={{ fontSize:"20px", fontWeight:"500" }}>You have no Courier Batches</Typography>
-                    <Typography size='s'>Fill up a Specimen Form to add Records that will be sent via Courier.</Typography>
+                    <Typography size='s'>Fill up a Specimen Form to process Courier Batches.</Typography>
                 </div>
                 <div className='flex justify-center items-center p-3 text-white'>
                     <LocalShippingIcon sx={{ height:"300px", width:"300px", color:"#6DB3F2" }} />   

@@ -102,11 +102,11 @@ const Results = () => {
 
     return (
         <div className='flex items-center justify-center mt-20 lg:ml-52'>
-            {specimenFiltered?.length === 0 && specimenLoad && (
+            {specimenFiltered?.length === 0 && (
                 <div className='flex flex-col justify-center items-center mt-20'>       
                     <div>
                         <Typography size='m' style={{ fontSize:"20px", fontWeight:"500" }}>You have no Results Batches</Typography>
-                        <Typography size='s'>Wait for the admin of this app to submit results for demo purposes.</Typography>
+                        <Typography size='s'>Wait for the developer of this app to submit results for demo of notification system purposes.</Typography>
                     </div>
                     <div className='flex justify-center items-center p-3 text-white'>
                         <DescriptionIcon sx={{ height:"300px", width:"300px", color:"#6DB3F2" }} />   
