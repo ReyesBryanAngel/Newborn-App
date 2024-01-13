@@ -111,7 +111,7 @@ const FillupForm = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='grid lg:grid-cols-3 lg:gap-10'>
+                    <div className='grid form-layout:grid-cols-3 lg:gap-10'>
                         <div className='mb-9'>
                             <InputField
                                 title={<>Baby&apos;s Last Name</>}
@@ -183,7 +183,7 @@ const FillupForm = () => {
                             />
                         </div>
                     </div>
-                    <div className='grid lg:grid-cols-3 lg:gap-10'>
+                    <div className='grid form-layout:grid-cols-3 lg:gap-10'>
                         <div className='mb-9'>
                             <InputField
                                 title={<>Mother&apos;s First Name</>}
@@ -253,7 +253,7 @@ const FillupForm = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='grid lg:grid-cols-3 lg:gap-10'>
+                    <div className='grid form-layout:grid-cols-3 lg:gap-10'>
                         <div className='mb-9'>
                             <InputField
                                 title={<>Baby&apos;s Weight (in Grams)</>}
@@ -366,7 +366,7 @@ const FillupForm = () => {
                             <div style={{ color:"#BD271E" }}>{SpecimenForm.errors.feedings}</div>
                         ) : null}
                     </div>
-                    <div className='grid lg:grid-cols-3 lg:gap-10'>
+                    <div className='grid form-layout:grid-cols-3 lg:gap-10'>
                         <div className='mb-9'>
                             <InputField
                                 title={"Hospital/Place of Collection"}
@@ -471,7 +471,7 @@ const FillupForm = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='grid lg:grid-cols-3 lg:gap-10'>
+                    <div className='grid form-layout:grid-cols-3 lg:gap-10'>
                         <div className='mb-9'>
                             <InputField
                                 title={<>Practitioner&apos;s Mobile Number</>}
@@ -527,7 +527,7 @@ const FillupForm = () => {
                             />
                         </div>
                     </div>
-                    <div className='grid lg:grid-cols-3 lg:gap-10'>
+                    <div className='grid form-layout:grid-cols-3 lg:gap-10'>
                         <div className='mb-9'>
                             <InputLabel htmlFor="name">
                                 <div >
@@ -623,7 +623,7 @@ const FillupForm = () => {
                             />
                         </div>
                     </div>
-                    <div className='grid lg:grid-cols-3 lg:gap-10'>
+                    <div className='grid form-layout:grid-cols-3 lg:gap-10'>
                         <div className='mb-9'>
                             <InputField
                                 title={"Barangay/City"}
@@ -679,7 +679,7 @@ const FillupForm = () => {
                             />
                         </div>
                     </div>
-                    <div className='grid mb-9 lg:grid-cols-2 lg:gap-10'>
+                    <div className='grid mb-9 form-layout:grid-cols-2 lg:gap-10'>
                         <InputField
                             title={"Parent/Guardian Other Contact Number"}
                             id="additional_contact_number"

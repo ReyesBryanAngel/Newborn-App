@@ -56,12 +56,7 @@ function ApiCall () {
         navigate('/login');
     }
     
-    const http = axios.create({
-        baseURL: "http://127.0.0.1:8000/api",
-        headers: {
-            "Content-type" : "application/json"
-        }
-    });
+    const http = axios.create({baseURL: import.meta.env.VITE_API_BASE_URL});
 
     http.interceptors.request.use(
         (config) => {
