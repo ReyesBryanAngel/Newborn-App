@@ -104,20 +104,9 @@ const Courier = () => {
                 </MuiAlert>
             </Snackbar>
         )}
-        { pendingSpecimens?.length === 0 && sentSpecimens?.length === 0 && allSamplesLoad && (
-            <div className='flex flex-col justify-center items-center mt-20'>       
-                <div>
-                    <Typography size='m' style={{ fontSize:"20px", fontWeight:"500" }}>You have no Courier Batches</Typography>
-                    <Typography size='s'>Fill up a Specimen Form to process Courier Batches.</Typography>
-                </div>
-                <div className='flex justify-center items-center p-3 text-white'>
-                    <LocalShippingIcon sx={{ height:"300px", width:"300px", color:"#6DB3F2" }} />   
-                </div>  
-            </div>
-        )}
-        {showRecords ? (
+        {showRecords && (
           <div className={`flex ${pendingSpecimens?.length !== 0 || filteredCouriers?.length === 0 ? 'lg:w-full' : ''} flex-col`}>
-            {allSamples?.length !== 0 && (
+            {allSamples?.length !== 0 ? (
                  <>
                     <div className='flex gap-2 md:gap-56 h-56 justify-between lg:ml-20'>
                         <div className='text-left ml-5 lg:ml-0 m-5 '>
@@ -195,14 +184,19 @@ const Courier = () => {
                     })}
                     </div>
                 </>
-            )}
+            ) : 
+                <div className='flex flex-col justify-center items-center mt-20'>       
+                    <div>
+                        <Typography size='m' style={{ fontSize:"20px", fontWeight:"500" }}>You have no Courier Batches</Typography>
+                        <Typography size='s'>Fill up a Specimen Form to process Courier Batches.</Typography>
+                    </div>
+                    <div className='flex justify-center items-center p-3 text-white'>
+                        <LocalShippingIcon sx={{ height:"300px", width:"300px", color:"#6DB3F2" }} />   
+                    </div>  
+                </div>
+            }
           </div>
-        ) :
-            couriers?.length > 0 &&
-            <Box sx={{ height: '80vh', display: 'flex', alignItems: 'center' }}>
-                <CircularProgress />
-            </Box>
-        }
+        )}
     </div>
     )
 }

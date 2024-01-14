@@ -142,7 +142,7 @@ const Records = () => {
                         <ReceiptLongIcon sx={{ height:"300px", width:"300px", color:"#6DB3F2" }} />   
                     </div>  
                 </div>
-            )}
+        )}
       {showRecords && filteredFetcher?.length !== 0 && (
         <div className='flex lg:w-full flex-col gap-10'>
           <div className='text-left'>
