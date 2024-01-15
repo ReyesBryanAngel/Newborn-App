@@ -10,8 +10,10 @@ import ApiCall from '../../../auth/ApiCall';
 import dayjs from "dayjs";
 import CourierBranch from "../../../static/CourierBranch";
 import InputField from '../../InputField';
+import { useData } from '../../../context/DataProvider';
 
 const CourierInformationForm = () => {
+    const { userId } = useData();
     const navigate = useNavigate();
     const { http } = ApiCall();
 
@@ -34,7 +36,8 @@ const CourierInformationForm = () => {
     })
 
     const saveCourierInformation = (values) => {
-        http.post('/v1/specimens/courier-information', values)
+        const specimenDataWIthId =  { user_id: userId, ...values };
+        http.post('/v1/specimens/courier-information', specimenDataWIthId)
         .then((res) => {
             if (res?.data?.status === 200) {
                 const trackingNumber = res.data.tracking_number;

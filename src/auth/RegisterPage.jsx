@@ -282,7 +282,7 @@ const LoginPage = () => {
               color="primary"
               style={{ marginTop: 50 }}
             >
-              Regsiter
+              Register
             </LoadingButton>
           </form>
         </Paper>

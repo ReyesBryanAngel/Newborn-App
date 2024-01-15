@@ -59,7 +59,7 @@ const CourierSample = () => {
     },[refreshSampleLoading, courierLoading, couriers, refreshSamples])
     const showRecords  = !refreshSampleLoading && refreshSamples && !courierLoading && couriers
     return (
-        <div className='flex flex-col'>
+        <div className='flex flex-col lg:ml-36 xl:ml-20 2xl:ml-10'>
             <div className='self-start lg:ml-20 mt-12'>
                 <IconButton onClick={() => {
                     navigate("/courier")
@@ -105,7 +105,7 @@ const CourierSample = () => {
                         const mother = `${sample.baby_last_name}, ${sample.mothers_first_name}`;
 
                         return (
-                        <Card key={index} elevation={4}>
+                        <Card key={index} elevation={4} sx={{ width:"350px", flexShrink:0 }}>
                             <CardContent className='flex flex-col text-left lg:w-96'>
                             <Typography variant='h6'>{mother}</Typography>
                             <div className='flex mt-5 space-x-16 pl-5 lg:px-10 lg:space-x-10 lg:pl-5'>

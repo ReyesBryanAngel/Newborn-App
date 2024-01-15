@@ -8,9 +8,7 @@ import MuiAlert from '@mui/material/Alert';
 import { 
     Card, 
     Typography, 
-    CardContent, 
-    Box, 
-    CircularProgress, 
+    CardContent,
     IconButton, 
     Button,
     TextField, 
@@ -104,10 +102,18 @@ const Courier = () => {
                 </MuiAlert>
             </Snackbar>
         )}
-        {showRecords && (
-          <div className={`flex ${pendingSpecimens?.length !== 0 || filteredCouriers?.length === 0 ? 'lg:w-full' : ''} flex-col`}>
-            {allSamples?.length !== 0 ? (
-                 <>
+        <div className={`${allSamples?.length == 0 && !allSampleLoading ? 'block mt-24 lg:ml-96' : 'hidden'}`}>       
+            <div>
+                <Typography size='m' style={{ fontSize:"20px", fontWeight:"500" }}>You have no Courier Batches</Typography>
+                <Typography size='s'>Fill up a Specimen Form to process Courier Batches.</Typography>
+            </div>
+            <div className='flex justify-center items-center p-3 text-white'>
+                <LocalShippingIcon sx={{ height:"300px", width:"300px", color:"#6DB3F2" }} />   
+            </div>  
+        </div>
+        {showRecords ? (
+            <div className={`flex ${pendingSpecimens?.length !== 0 || filteredCouriers?.length === 0 ? 'lg:w-full' : ''} flex-col`}>
+                <div className={`${allSamples?.length !== 0 ? 'block' : 'hidden'}`}>
                     <div className='flex gap-2 md:gap-56 h-56 justify-between lg:ml-20'>
                         <div className='text-left ml-5 lg:ml-0 m-5 '>
                             <Typography variant='h5'>Courier</Typography>
@@ -149,42 +155,42 @@ const Courier = () => {
                             )}
                         </div>
                     </div>
-                    
-                    
                     <div className='grid gap-10 md:grid-cols-2 xl:grid-cols-3 lg:ml-24'>
-                    {filteredCouriers?.map((c, index) => {
-                        const dateOfPickup = new Date(c.date_of_pickup);
-                        const formattedDate = dayjs(dateOfPickup).format("YYYY-MM-DD");
-                        const track = `${c.courier}-${c.tracking_number}`;
-                        const countMatchingSamples = (trackingNumber) => {
-                            return sentSpecimens?.filter(sample => sample.tracking_number === trackingNumber).length;
-                        };
-                        const matchingSampleCount = countMatchingSamples(c.tracking_number);
-                        
-                        return (
-                            <IconButton key={index} onClick={() => {showCourierSample(c.tracking_number)}}>
-                                <Card elevation={4} sx={{ width:"330px", flexShrink:0 }}>
-                                    <CardContent className='flex flex-col text-left'>
-                                        <Typography variant='h6'>{track}</Typography>
-                                        <div className='flex mt-5 space-x-8 pl-5 lg:space-x-9 lg:pl-0'>
-                                            <div className='whitespace-nowrap'>
-                                            <Typography>Date of Pickup<br />{formattedDate}</Typography>
+                        {filteredCouriers?.map((c, index) => {
+                            const dateOfPickup = new Date(c.date_of_pickup);
+                            const formattedDate = dayjs(dateOfPickup).format("YYYY-MM-DD");
+                            const track = `${c.courier}-${c.tracking_number}`;
+                            const countMatchingSamples = (trackingNumber) => {
+                                return sentSpecimens?.filter(sample => sample.tracking_number === trackingNumber).length;
+                            };
+                            const matchingSampleCount = countMatchingSamples(c.tracking_number);
+                            
+                            return (
+                                <IconButton key={index} onClick={() => {showCourierSample(c.tracking_number)}}>
+                                    <Card elevation={4} sx={{ width:"330px", flexShrink:0 }}>
+                                        <CardContent className='flex flex-col text-left'>
+                                            <Typography variant='h6'>{track}</Typography>
+                                            <div className='flex mt-5 space-x-8 pl-5 lg:space-x-9 lg:pl-0'>
+                                                <div className='whitespace-nowrap'>
+                                                <Typography>Date of Pickup<br />{formattedDate}</Typography>
+                                                </div>
+                                                <div>
+                                                <Typography>Samples<br />{matchingSampleCount}</Typography>
+                                                </div>
+                                                <div>
+                                                <Typography>Status<br />{c?.result}</Typography>
+                                                </div>
                                             </div>
-                                            <div>
-                                            <Typography>Samples<br />{matchingSampleCount}</Typography>
-                                            </div>
-                                            <div>
-                                            <Typography>Status<br />{c?.result}</Typography>
-                                            </div>
-                                        </div>
-                                    </CardContent>
-                                </Card>
-                            </IconButton>
-                        );
-                    })}
+                                        </CardContent>
+                                    </Card>
+                                </IconButton>
+                            );
+                        })}
                     </div>
-                </>
-            ) : 
+                </div>
+            </div>
+        ) :
+            !couriersLoad &&
                 <div className='flex flex-col justify-center items-center mt-20'>       
                     <div>
                         <Typography size='m' style={{ fontSize:"20px", fontWeight:"500" }}>You have no Courier Batches</Typography>
@@ -194,9 +200,7 @@ const Courier = () => {
                         <LocalShippingIcon sx={{ height:"300px", width:"300px", color:"#6DB3F2" }} />   
                     </div>  
                 </div>
-            }
-          </div>
-        )}
+        }
     </div>
     )
 }

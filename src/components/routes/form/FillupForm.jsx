@@ -26,7 +26,7 @@ import dayjs from "dayjs";
 
 const FillupForm = () => {
     const navigate = useNavigate();
-    const { setFeedingValues, feedingValues, setCreateSpecimen } = useData();
+    const { setFeedingValues, feedingValues, setCreateSpecimen, userId } = useData();
     const [openSnackBar, setOpenSnackBar] = useState(false);
     const [selectedFeedings, setSelectedFeedings] = useState([]);
     const [successMessage, setSuccessMessage] = useState(null);
@@ -49,7 +49,8 @@ const FillupForm = () => {
     }
 
     const submitSepcimen = async() => {
-        await http.post('/v1/specimens', SpecimenForm?.values)
+        const specimenDataWIthId =  { user_id: userId, ...SpecimenForm?.values };
+        await http.post('/v1/specimens', specimenDataWIthId)
             .then((res) => {
                 setSuccessMessage(res?.data?.message);
                 if (res?.data?.status === 200) {

@@ -69,7 +69,7 @@ const Records = () => {
   }
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isLoading && data) {
       const filteredRecords = data?.filter((record) =>
         `${record?.baby_last_name}, ${record?.mothers_first_name}`.toLowerCase().includes(searchQuery.toLowerCase())
       );
@@ -77,7 +77,7 @@ const Records = () => {
     }
   }, [data, isLoading, searchQuery]);
 
-  const showRecords = data?.length > 0 && !isLoading;
+  const showRecords = data && !isLoading;
 
   return (
     <div className='flex items-center justify-center mt-20 lg:ml-52'>
@@ -132,18 +132,18 @@ const Records = () => {
             </DialogContentText>
         </Dialog>
       )}
-      {filteredFetcher?.length === 0 && (
-                <div className='flex flex-col justify-center items-center mt-20'>       
-                    <div>
-                        <Typography size='m' style={{ fontSize:"20px", fontWeight:"500" }}>You have no Record Batches</Typography>
-                        <Typography size='s'>Fill up a Specimen Form to add Records.</Typography>
-                    </div>
-                    <div className='flex justify-center items-center p-3 text-white'>
-                        <ReceiptLongIcon sx={{ height:"300px", width:"300px", color:"#6DB3F2" }} />   
-                    </div>  
-                </div>
+      {filteredFetcher?.length === 0 && specimenLoad && (
+          <div className='flex flex-col justify-center items-center mt-20'>       
+              <div>
+                  <Typography size='m' style={{ fontSize:"20px", fontWeight:"500" }}>You have no Record Batches</Typography>
+                  <Typography size='s'>Fill up a Specimen Form to add Records.</Typography>
+              </div>
+              <div className='flex justify-center items-center p-3 text-white'>
+                  <ReceiptLongIcon sx={{ height:"300px", width:"300px", color:"#6DB3F2" }} />   
+              </div>  
+          </div>
         )}
-      {showRecords && filteredFetcher?.length !== 0 && (
+      {showRecords && filteredFetcher?.length !== 0 ? (
         <div className='flex lg:w-full flex-col gap-10'>
           <div className='text-left'>
             <Typography variant='h5'>Patients (by Mother&apos;s Name)</Typography>
@@ -209,7 +209,18 @@ const Records = () => {
             })}
           </div>
         </div>
-      )}
+      ) : 
+      !specimenLoad &&
+        <div className='flex flex-col justify-center items-center mt-20'>       
+          <div>
+              <Typography size='m' style={{ fontSize:"20px", fontWeight:"500" }}>You have no Record Batches</Typography>
+              <Typography size='s'>Fill up a Specimen Form to add Records.</Typography>
+          </div>
+          <div className='flex justify-center items-center p-3 text-white'>
+              <ReceiptLongIcon sx={{ height:"300px", width:"300px", color:"#6DB3F2" }} />   
+          </div>  
+        </div>
+      }
     </div>
   );
 };

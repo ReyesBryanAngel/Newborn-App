@@ -8,6 +8,7 @@ export const DataProvider = ({ children }) => {
   const [newSpecimenData, setNewSpecimenData] = useState([]);
   const [specimenFiltered, setSpecimenFiltered] = useState([]);
   const [goToClicked, setGoToClicked] = useState(false);
+  const [userId, setUserId] = useState(null);
  
   const initialSpecimenState = {
     type_of_sample: '',
@@ -71,7 +72,9 @@ export const DataProvider = ({ children }) => {
         specimenFiltered,
         setSpecimenFiltered,
         goToClicked,
-        setGoToClicked
+        setGoToClicked,
+        userId,
+        setUserId
       }}
     >
       {children}

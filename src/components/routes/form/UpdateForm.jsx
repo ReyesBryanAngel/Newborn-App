@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -29,7 +29,7 @@ import CustomCheckbox from '../../CustomCheckBox';
 
 const UpdateForm = () => {
     const navigate = useNavigate();
-    const { setFeedingValues } = useData();
+    const { setFeedingValues, userId } = useData();
     const [openSnackBar, setOpenSnackBar] = useState(false);
     const [specimenLoad, setSpecimenLoad] = useState(false);
     const [selectedFeedings, setSelectedFeedings] = useState([]);
@@ -72,7 +72,8 @@ const UpdateForm = () => {
     }
 
     const updateSpecimen = () => {
-        http.put(`v1/specimens/${refreshSpecimen?.samples?.id}`, SpecimenForm?.values)
+        const specimenDataWIthId =  { user_id: userId, ...SpecimenForm?.values };
+        http.put(`v1/specimens/${refreshSpecimen?.samples?.id}`, specimenDataWIthId)
         .then((res) => {
             if (res?.data?.status === 200) {
                 setOpenSnackBar(true);

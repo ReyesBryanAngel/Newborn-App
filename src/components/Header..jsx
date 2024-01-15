@@ -47,7 +47,7 @@ const Header = () => {
     const [notificationCount, setNotificationCount] = useState(0);
     const [results, setResults] = useState([]);
     const [badgeOpener, setBadgeOpener] = useState(false);
-    const { setSpecimenFiltered, setGoToClicked } = useData();
+    const { setSpecimenFiltered, setGoToClicked, userId } = useData();
     const anchorRef = useRef(null);
 
     useQuery({
@@ -122,6 +122,7 @@ const Header = () => {
             if (item.result !== null && !item.viewed) {
                 const updatedSpecimen = {
                     ...item,
+                    user_id: userId,
                     viewed: 1,
                 };
                 await http.put(`v1/specimens/${item.id}`, updatedSpecimen)

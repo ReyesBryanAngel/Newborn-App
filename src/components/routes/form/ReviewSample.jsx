@@ -66,7 +66,7 @@ const ReviewSample = () => {
 
     return (
         <div className='flex flex-col'>
-            <div className='self-start lg:ml-20 mt-12'>
+            <div className='self-start lg:ml-48 xl:ml-40 mt-12'>
                 <IconButton onClick={() => {
                     navigate("/courier")
                 }}>
@@ -75,7 +75,7 @@ const ReviewSample = () => {
                     </div>
                 </IconButton> 
             </div>
-            <div className='flex items-center justify-center mt-5 lg:mt-0 lg:ml-36'>
+            <div className='flex items-center justify-center mt-5 lg:mt-10 lg:ml-64 xl:ml-56'>
                 {showRecords ? (
                     <div className='flex flex-col gap-10'>
                         <div className='text-left'>
@@ -87,7 +87,7 @@ const ReviewSample = () => {
                                 const formattedDate = dayjs(dateOfBirth).format("YYYY-MM-DD");
                                 const mother = `${record?.baby_last_name}, ${record?.mothers_first_name}`;
                                 return (
-                                <Card key={index} elevation={4}>
+                                <Card key={index} elevation={4} sx={{width:"330px", flexShrink:0 }}>
                                     <CardContent className='flex flex-col items-start lg:w-96'>
                                         <div className='flex items-center'>
                                             <Checkbox
@@ -126,7 +126,7 @@ const ReviewSample = () => {
                                 textTransform: "none",
                             }}
                         >
-                            Input Manul Courier Information
+                            Input Manual Courier Information
                         </Button>
                     </div>
                 </div>

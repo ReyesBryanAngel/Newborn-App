@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { jwtDecode } from "jwt-decode";
+import { useData } from '../context/DataProvider';
 
 function ApiCall () {
+    const { setUserId } = useData();
     const navigate = useNavigate();
     const getToken = () =>{
         const tokenString = sessionStorage.getItem('token');
@@ -21,7 +23,7 @@ function ApiCall () {
     const [user,setUser] = useState(getUser());
 
 
-    const saveToken = (user,token) =>{
+    const saveToken = (user, token) => { 
         sessionStorage.setItem('token',JSON.stringify(token));
         sessionStorage.setItem('user',JSON.stringify(user));
 
@@ -48,6 +50,7 @@ function ApiCall () {
       };
 
       useEffect(() => {
+        setUserId(user?.id);
         checkTokenExpiration();
       })
 

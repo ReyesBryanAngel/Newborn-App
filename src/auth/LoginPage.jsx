@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { TextField, 
   Button, 
-  Container, 
   Box, 
   Paper, 
   Grid, 
@@ -28,7 +27,7 @@ const { http, setToken } = ApiCall();
     setError(null);
     setSubmitTrigger(!submitTrigger);
     http.post('/auth/login', { email: username, password: password })
-      .then((res) => {
+      .then((res) => {        
         setToken(res.data.user, res.data.access_token);
       })
       .catch((e) => {

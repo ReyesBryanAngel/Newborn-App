@@ -35,96 +35,96 @@ function App() {
 
   const queryCLient = new QueryClient();
   return (
-    <DataProvider>
-      <QueryClientProvider client={queryCLient}>
-        <Router>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            <Route path="/" element={
+    <QueryClientProvider client={queryCLient}>
+      <DataProvider>
+          <Router>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              <Route path="/" element={
+                  <RouteProtector isLoggedIn={isLoggedIn}>
+                    <ApplicationLayout>
+                      <Dashboard />
+                    </ApplicationLayout>
+                  </RouteProtector>
+                } 
+              />
+              <Route path="/records" element={
+                  <RouteProtector isLoggedIn={isLoggedIn}>
+                    <ApplicationLayout>
+                      <Records />
+                    </ApplicationLayout>
+                  </RouteProtector>
+                } 
+              />
+              <Route path="/results" element={
+                  <RouteProtector isLoggedIn={isLoggedIn}>
+                    <ApplicationLayout>
+                      <Results />
+                    </ApplicationLayout>
+                  </RouteProtector>
+                } 
+              />
+              <Route path="/courier" element={
+                  <RouteProtector isLoggedIn={isLoggedIn}>
+                    <ApplicationLayout>
+                      <Courier />
+                    </ApplicationLayout>
+                  </RouteProtector>
+                } 
+              />
+              <Route path="/courier-sample" element={
                 <RouteProtector isLoggedIn={isLoggedIn}>
                   <ApplicationLayout>
-                    <Dashboard />
+                    <CourierSample />
                   </ApplicationLayout>
                 </RouteProtector>
-              } 
-            />
-            <Route path="/records" element={
+                } 
+              />
+              <Route path="/form" element={
                 <RouteProtector isLoggedIn={isLoggedIn}>
                   <ApplicationLayout>
-                    <Records />
+                    <FillupForm />
                   </ApplicationLayout>
                 </RouteProtector>
-              } 
-            />
-            <Route path="/results" element={
+                } 
+              />
+              <Route path="/update-form" element={
                 <RouteProtector isLoggedIn={isLoggedIn}>
                   <ApplicationLayout>
-                    <Results />
+                    <UpdateForm />
                   </ApplicationLayout>
                 </RouteProtector>
-              } 
-            />
-            <Route path="/courier" element={
+                } 
+              />
+              <Route path="/review-sample-form" element={
                 <RouteProtector isLoggedIn={isLoggedIn}>
                   <ApplicationLayout>
-                    <Courier />
+                    <ReviewSample />
                   </ApplicationLayout>
                 </RouteProtector>
-              } 
-            />
-             <Route path="/courier-sample" element={
-              <RouteProtector isLoggedIn={isLoggedIn}>
-                <ApplicationLayout>
-                  <CourierSample />
-                </ApplicationLayout>
-              </RouteProtector>
-              } 
-            />
-            <Route path="/form" element={
-              <RouteProtector isLoggedIn={isLoggedIn}>
-                <ApplicationLayout>
-                  <FillupForm />
-                </ApplicationLayout>
-              </RouteProtector>
-              } 
-            />
-            <Route path="/update-form" element={
-              <RouteProtector isLoggedIn={isLoggedIn}>
-                <ApplicationLayout>
-                  <UpdateForm />
-                </ApplicationLayout>
-              </RouteProtector>
-              } 
-            />
-            <Route path="/review-sample-form" element={
-              <RouteProtector isLoggedIn={isLoggedIn}>
-                <ApplicationLayout>
-                  <ReviewSample />
-                </ApplicationLayout>
-              </RouteProtector>
-              } 
-            />
-             <Route path="/courier-information-form" element={
-              <RouteProtector isLoggedIn={isLoggedIn}>
-                <ApplicationLayout>
-                  <CourierInformationForm />
-                </ApplicationLayout>
-              </RouteProtector>
-              } 
-            />
-            <Route path="/repeat-form" element={
-              <RouteProtector isLoggedIn={isLoggedIn}>
-                 <ApplicationLayout>
-                  <RepeatForm />
-                </ApplicationLayout>
-              </RouteProtector>
-              } 
-            />
-          </Routes>
-        </Router>
-      </QueryClientProvider>
-    </DataProvider>
+                } 
+              />
+              <Route path="/courier-information-form" element={
+                <RouteProtector isLoggedIn={isLoggedIn}>
+                  <ApplicationLayout>
+                    <CourierInformationForm />
+                  </ApplicationLayout>
+                </RouteProtector>
+                } 
+              />
+              <Route path="/repeat-form" element={
+                <RouteProtector isLoggedIn={isLoggedIn}>
+                  <ApplicationLayout>
+                    <RepeatForm />
+                  </ApplicationLayout>
+                </RouteProtector>
+                } 
+              />
+            </Routes>
+          </Router>
+      </DataProvider>
+    </QueryClientProvider>
   )
 }
 
