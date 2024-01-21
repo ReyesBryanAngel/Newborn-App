@@ -295,7 +295,7 @@ const LoginPage = () => {
                   {<p style={{ color: "#BD271E" }}>{errorMessage}</p>}
                 </div>          
                 <LoadingButton
-                  // loading={formik.isSubmitting}
+                  loading={formik.isSubmitting}
                   type="submit"
                   fullWidth
                   variant="contained"
