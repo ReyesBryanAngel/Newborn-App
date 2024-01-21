@@ -39,7 +39,7 @@ const ResetPassword = () => {
     };
   
     const resetPass = () => {
-        http.post(`/auth/change-password/`, {
+        http.post(`/auth/change-password`, {
             password: password,
             password_confirmation: confirmPassword,
             token: token,

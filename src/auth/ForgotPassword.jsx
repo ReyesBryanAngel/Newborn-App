@@ -12,7 +12,7 @@ const ForgotPassword =  () => {
     const { http, } = ApiCall();
     const [successMessage, setSuccessMessage] = useState(null);
     const [openSnackBar, setOpenSnackBar] = useState(false);
-    const [error, setError] = useState('');
+    const [error, setError] = useState(null);
 
     const closeSnackBar = () => {
         setOpenSnackBar(false);
@@ -33,6 +33,7 @@ const ForgotPassword =  () => {
             .then((res) => {        
               setSuccessMessage(res?.data?.message);
               setOpenSnackBar(true);
+              setError(null)
               formik.setSubmitting(false);
             })
             .catch((e) => {
