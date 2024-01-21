@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
     Typography, 
     Paper, 
@@ -12,6 +12,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
 import { LoadingButton } from '@mui/lab';
+import { useData } from '../context/DataProvider';
 
 const VerifyAccount = () => {
     const [otp, setOtp] = useState('');
@@ -19,8 +20,10 @@ const VerifyAccount = () => {
     const [openSnackBar, setOpenSnackBar] = useState(false);
     const [successMessage, setSuccessMessage] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
+    const [emailHidden, setEmailHidden] = useState("");
     const { http } = ApiCall();
     const { id } = useParams();
+    const { pendingUserEmail } = useData();
     const navigate = useNavigate();
 
     const handleChange = (otpValue) => {
@@ -63,6 +66,12 @@ const VerifyAccount = () => {
             setResendLoading(false);
         })
     }
+
+    useEffect(() => {
+        const atIndex = pendingUserEmail.indexOf('@');
+        const pendingEmail = "*".repeat(atIndex) + pendingUserEmail.substring(atIndex);
+        setEmailHidden(pendingEmail);
+    },[pendingUserEmail])
 
     return (
         <>
@@ -112,8 +121,8 @@ const VerifyAccount = () => {
                                     src={GmailIcon} />
                             </div>
                             <Typography>
-                                OTP VERIFICATION <br /><br /> code has been sent to
-                                reyesangelbryan@gmail.com
+                                OTP VERIFICATION <br /><br /> code has been sent to <br/>
+                                {emailHidden}
                             </Typography>
                         </div>
                         <div className='w-80'>

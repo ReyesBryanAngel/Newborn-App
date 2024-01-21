@@ -18,9 +18,11 @@ import ApiCall from "./ApiCall";
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
+import { useData } from '../context/DataProvider';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const { setPendingUserEmail } = useData();
   const { http } = ApiCall();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPass, setShowConfirmPass] = useState(false);
@@ -68,6 +70,7 @@ const LoginPage = () => {
           setErrorMessage(null);
           if (res?.status === 200) { 
               setOpenSnackBar(true);
+              setPendingUserEmail(res?.data?.email);
               setTimeout(() => {
                 navigate(`/verify/${res?.data?.id}`)
               }, 5000)
@@ -186,8 +189,8 @@ const LoginPage = () => {
                         Boolean(formik.errors.last_name)
                       }
                       helperText={
-                          formik.touched.name &&
-                          (formik.errors.name)
+                          formik.touched.last_name &&
+                          (formik.errors.last_name)
                       }
                     />
                   </Grid>
@@ -292,7 +295,7 @@ const LoginPage = () => {
                   {<p style={{ color: "#BD271E" }}>{errorMessage}</p>}
                 </div>          
                 <LoadingButton
-                  loading={formik.isSubmitting}
+                  // loading={formik.isSubmitting}
                   type="submit"
                   fullWidth
                   variant="contained"
