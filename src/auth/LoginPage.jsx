@@ -9,7 +9,7 @@ import { TextField,
   Typography 
 } from '@mui/material';
 import { Visibility, VisibilityOff, Lock } from '@mui/icons-material';
-import MyLogo from "../assets/my-logo.png"
+import MyLogo from "../assets/my-logo.png";
 import ApiCall from "./ApiCall";
 import MainLogo from "../assets/new-born.jpg"
 
@@ -68,7 +68,7 @@ const { http, setToken } = ApiCall();
         <Box sx={{ width:"60%" }} component="img" className="w-full" src={MainLogo} alt="Banner" />
         <Typography variant='h6' lineHeight={2}>Where Every Coo and Goo Gets its Own Digital Crib! <br/> Welcome to a World of Tiny Footprints and Big Smiles.</Typography>
       </div>
-      <div className=''>
+      <div>
         <Paper 
           elevation={3} 
           style={{ 
@@ -92,7 +92,7 @@ const { http, setToken } = ApiCall();
                   {<p style={{ color: "#BD271E" }}>{error}</p>} 
                 </div>
               )}
-          <form style={{ width: '100%', marginTop: 16 }}>
+          <form>
             <Grid container spacing={5}>
               <Grid item xs={12}>
                 <TextField
@@ -144,6 +144,11 @@ const { http, setToken } = ApiCall();
             <Typography sx={{ marginTop: "20px", textAlign:"end" }}>
                 <a href='/register' style={{ color: 'blue', textDecoration: 'underline', alignSelf: "end" }}>
                   Don&apos;t have an account yet?
+                </a>
+            </Typography>
+            <Typography sx={{ marginTop: "20px", textAlign:"end" }}>
+                <a href='/forgot-password' style={{ color: 'blue', textDecoration: 'underline', alignSelf: "end" }}>
+                  Forgot Password?
                 </a>
             </Typography>
 

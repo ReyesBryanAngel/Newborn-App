@@ -17,9 +17,16 @@ import ReviewSample from './components/routes/form/ReviewSample';
 import CourierInformationForm from './components/routes/form/CourierInformationForm';
 import RepeatForm from './components/routes/form/RepeatForm';
 import UpdateForm from './components/routes/form/UpdateForm';
+import ForgotPassword from './auth/ForgotPassword';
+import ResetPassword from './auth/ResetPassword';
+import InvalidToken from './auth/InvalidToken';
+import VerifyAccount from './auth/VerifyAccount';
+import CssBaseline from '@mui/material/CssBaseline'
+
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   const checkUserToken = () => {
     const userToken = sessionStorage.getItem('token');
     if (userToken && userToken !== 'undefined') {
@@ -41,6 +48,11 @@ function App() {
             <Routes>
               <Route path="/login" element={<LoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
+              <Route path="/verify/:id" element={<VerifyAccount />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password/:token" element={<ResetPassword />} />
+              <Route path="/invalid-token" element={<InvalidToken />} />
+              
               <Route path="/" element={
                   <RouteProtector isLoggedIn={isLoggedIn}>
                     <ApplicationLayout>
