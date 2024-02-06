@@ -102,7 +102,7 @@ const Courier = () => {
                 </MuiAlert>
             </Snackbar>
         )}
-        <div className={`${allSamples?.length == 0 && !allSampleLoading ? 'block mt-24 lg:ml-96' : 'hidden'}`}>       
+        <div className={`${allSamples?.length == 0 && !courierLoading ? 'block mt-24 lg:ml-96' : 'hidden'}`}>       
             <div>
                 <Typography size='m' style={{ fontSize:"20px", fontWeight:"500" }}>You have no Courier Batches</Typography>
                 <Typography size='s'>Fill up a Specimen Form to process Courier Batches.</Typography>
@@ -111,7 +111,7 @@ const Courier = () => {
                 <LocalShippingIcon sx={{ height:"300px", width:"300px", color:"#6DB3F2" }} />   
             </div>  
         </div>
-        {showRecords ? (
+        {showRecords && (
             <div className={`flex ${pendingSpecimens?.length !== 0 || filteredCouriers?.length === 0 ? 'lg:w-full' : ''} flex-col`}>
                 <div className={`${allSamples?.length !== 0 ? 'block' : 'hidden'}`}>
                     <div className='flex gap-2 md:gap-56 h-56 justify-between lg:ml-20'>
@@ -155,7 +155,7 @@ const Courier = () => {
                             )}
                         </div>
                     </div>
-                    <div className='grid gap-10 md:grid-cols-2 xl:grid-cols-3 lg:ml-24'>
+                    <div className='grid lg:gap-32 md:grid-cols-2 xl:grid-cols-3 lg:ml-24'>
                         {filteredCouriers?.map((c, index) => {
                             const dateOfPickup = new Date(c.date_of_pickup);
                             const formattedDate = dayjs(dateOfPickup).format("YYYY-MM-DD");
@@ -189,18 +189,7 @@ const Courier = () => {
                     </div>
                 </div>
             </div>
-        ) :
-            !couriersLoad &&
-                <div className='flex flex-col justify-center items-center mt-20'>       
-                    <div>
-                        <Typography size='m' style={{ fontSize:"20px", fontWeight:"500" }}>You have no Courier Batches</Typography>
-                        <Typography size='s'>Fill up a Specimen Form to process Courier Batches.</Typography>
-                    </div>
-                    <div className='flex justify-center items-center p-3 text-white'>
-                        <LocalShippingIcon sx={{ height:"300px", width:"300px", color:"#6DB3F2" }} />   
-                    </div>  
-                </div>
-        }
+        )}
     </div>
     )
 }

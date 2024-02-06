@@ -101,7 +101,7 @@ const Results = () => {
 
     return (
         <div className='flex items-center justify-center mt-20 lg:ml-52'>
-            {specimenFiltered?.length == 0 && specimenLoad && (
+            {specimenFiltered?.length == 0 && !isLoading && (
                 <div className='flex flex-col justify-center items-center mt-20'>       
                     <div>
                         <Typography size='m' style={{ fontSize:"20px", fontWeight:"500" }}>You have no Results Batches</Typography>
@@ -112,7 +112,7 @@ const Results = () => {
                     </div>  
                 </div>
             )}
-          {showRecords && specimenFiltered?.length !== 0  ? (
+          {showRecords && (
             <div className='flex lg:w-full flex-col '>
                 {repeatFormConfitmation && (
                     <Dialog onClose={closeDialog} open={open}>
@@ -230,18 +230,7 @@ const Results = () => {
                     })}
                 </div>
             </div>
-          ) :
-          !specimenLoad &&
-            <div className='flex flex-col justify-center items-center mt-20'>       
-                <div>
-                    <Typography size='m' style={{ fontSize:"20px", fontWeight:"500" }}>You have no Results Batches</Typography>
-                    <Typography size='s'>Wait for the developer of this app to submit results for demo of notification system purposes.</Typography>
-                </div>
-                <div className='flex justify-center items-center p-3 text-white'>
-                    <DescriptionIcon sx={{ height:"300px", width:"300px", color:"#6DB3F2" }} />   
-                </div>  
-            </div>
-          }
+          )}
         </div>
       );
 }

@@ -132,7 +132,7 @@ const Records = () => {
             </DialogContentText>
         </Dialog>
       )}
-      {filteredFetcher?.length === 0 && specimenLoad && (
+      {data?.length == 0 && !isLoading && (
           <div className='flex flex-col justify-center items-center mt-20'>       
               <div>
                   <Typography size='m' style={{ fontSize:"20px", fontWeight:"500" }}>You have no Record Batches</Typography>
@@ -142,8 +142,8 @@ const Records = () => {
                   <ReceiptLongIcon sx={{ height:"300px", width:"300px", color:"#6DB3F2" }} />   
               </div>  
           </div>
-        )}
-      {showRecords && filteredFetcher?.length !== 0 ? (
+      )}
+      {showRecords && data?.length > 0 && (
         <div className='flex lg:w-full flex-col gap-10'>
           <div className='text-left'>
             <Typography variant='h5'>Patients (by Mother&apos;s Name)</Typography>
@@ -209,18 +209,7 @@ const Records = () => {
             })}
           </div>
         </div>
-      ) : 
-      !specimenLoad &&
-        <div className='flex flex-col justify-center items-center mt-20'>       
-          <div>
-              <Typography size='m' style={{ fontSize:"20px", fontWeight:"500" }}>You have no Record Batches</Typography>
-              <Typography size='s'>Fill up a Specimen Form to add Records.</Typography>
-          </div>
-          <div className='flex justify-center items-center p-3 text-white'>
-              <ReceiptLongIcon sx={{ height:"300px", width:"300px", color:"#6DB3F2" }} />   
-          </div>  
-        </div>
-      }
+      )}
     </div>
   );
 };
