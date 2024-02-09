@@ -93,7 +93,6 @@ const ForgotPassword =  () => {
                             <TextField
                                 variant="outlined"
                                 label="Email"
-                                // fullWidth
                                 className='w-64'
                                 name='email'
                                 sx={{ marginTop:"20px" }}
