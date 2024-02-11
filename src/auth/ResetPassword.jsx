@@ -23,6 +23,8 @@ const ResetPassword = () => {
     const [openSnackBar, setOpenSnackBar] = useState(false);
     const { http } = ApiCall();
     const { token } = useParams();
+    const correctPasswordFormat = `Password must have at least one special character, capital letter, and number.`;
+    const incorrectPasswordFormat = "The password field format is invalid.";
   
     const navigate = useNavigate();
   
@@ -53,7 +55,12 @@ const ResetPassword = () => {
                 }, 5000)
               }
           }).catch((e) => {
-            setError(e.response?.data);
+            if (e.response?.data?.message === incorrectPasswordFormat) {
+                setError(correctPasswordFormat);
+            } else {
+                setError(e.response?.data?.message);
+            }
+            
           });
         
     };
@@ -147,7 +154,7 @@ const ResetPassword = () => {
                                         }}
                                     
                                 />
-                                <div className='text-start'>
+                                <div className='text-center w-80'>
                                     {<p style={{ color: "#BD271E" }}>{error}</p>} 
                                 </div>
                                 <Button

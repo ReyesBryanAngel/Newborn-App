@@ -18,7 +18,6 @@ const ForgotPassword =  () => {
         setOpenSnackBar(false);
       }
     
-
     const formik = useFormik({
         initialValues: {      
             email: "",
@@ -87,7 +86,10 @@ const ForgotPassword =  () => {
                                 className='w-64'
                                 name='email'
                                 sx={{ marginTop:"20px" }}
-                                onChange={formik.handleChange}
+                                onChange={(e) => {
+                                    setError(null);
+                                    formik.handleChange(e)
+                                }}
                                 onBlur={formik.handleBlur}
                                 value={formik.values.email}
                                 error={
