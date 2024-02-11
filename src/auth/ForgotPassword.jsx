@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { TextField, Paper, Typography } from '@mui/material';
+import { TextField, Card, Typography } from '@mui/material';
 import ApiCall from './ApiCall';
 import { LoadingButton } from '@mui/lab';
 import { useFormik } from 'formik';
@@ -43,7 +43,7 @@ const ForgotPassword =  () => {
       })
 
     return (
-        <div className='flex items-center justify-center'>
+        <div className='flex items-center mt-20 justify-center'>
              {openSnackBar && (
                 <Snackbar 
                     open={open} 
@@ -71,18 +71,9 @@ const ForgotPassword =  () => {
                     </div>
                 </div>
                 <div>
-                    <Paper 
-                        elevation={3} 
-                        style={{ 
-                            padding: 30, 
-                            display: 'flex', 
-                            flexDirection: 'column',
-                            alignItems: 'center', 
-                            marginTop:"4rem",
-                            paddingBottom:"3rem",
-                            width:"350px",
-                            height:"50vh"
-                        }} 
+                    <Card 
+                        elevation={3}
+                        sx={{ padding:"35px" }}
                     >
                          <div className='whitespace-nowrap self-start text-start lg:hidden'>
                             <Typography variant='h6'>
@@ -111,7 +102,7 @@ const ForgotPassword =  () => {
                             <div className='text-start'>
                                 {<p style={{ color: "#BD271E" }}>{error}</p>} 
                             </div>
-                            <div className='mt-20 pb-10'>
+                            <div className='mt-20'>
                                 <LoadingButton 
                                     loading={formik.isSubmitting}
                                     variant='contained' 
@@ -125,7 +116,7 @@ const ForgotPassword =  () => {
                             </div>
                             
                         </form>
-                    </Paper>
+                    </Card>
                 </div>
             </div>
         </div>

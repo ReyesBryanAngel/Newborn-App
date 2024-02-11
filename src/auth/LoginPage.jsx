@@ -11,7 +11,8 @@ import { TextField,
 import { Visibility, VisibilityOff, Lock } from '@mui/icons-material';
 import MyLogo from "../assets/my-logo.png";
 import ApiCall from "./ApiCall";
-import MainLogo from "../assets/new-born.jpg"
+import MainLogo from "../assets/new-born.jpg";
+import EmailIcon from '@mui/icons-material/Email';
 
 const LoginPage = () => {
 const { http, setToken } = ApiCall();
@@ -97,12 +98,19 @@ const { http, setToken } = ApiCall();
               <Grid item xs={12}>
                 <TextField
                   variant="outlined"
-                  label="Username"
+                  label="Email Address"
                   fullWidth
                   value={username}
                   onChange={(e) => {
                     setUsername(e.target.value === '' ? null : e.target.value);
                     setSubmitTrigger(false);
+                  }}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <EmailIcon />
+                      </InputAdornment>
+                    ),
                   }}
                 />
                 <div className='text-start'>
@@ -121,11 +129,7 @@ const { http, setToken } = ApiCall();
                     setSubmitTrigger(false);
                   }}
                   InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <Lock />
-                      </InputAdornment>
-                    ),
+                   
                     endAdornment: (
                       <InputAdornment position="end">
                         <IconButton onClick={handleTogglePasswordVisibility} edge="end">
@@ -139,20 +143,7 @@ const { http, setToken } = ApiCall();
                   {<p style={{ color: "#BD271E" }}>{emptyPassword}</p>} 
                 </div>
               </Grid>
-            </Grid>
-
-            <Typography sx={{ marginTop: "20px", textAlign:"end" }}>
-                <a href='/register' style={{ color: 'blue', textDecoration: 'underline', alignSelf: "end" }}>
-                  Don&apos;t have an account yet?
-                </a>
-            </Typography>
-            <Typography sx={{ marginTop: "20px", textAlign:"end" }}>
-                <a href='/forgot-password' style={{ color: 'blue', textDecoration: 'underline', alignSelf: "end" }}>
-                  Forgot Password?
-                </a>
-            </Typography>
-
-            
+            </Grid>            
             <Button
               type="button"
               fullWidth
@@ -163,6 +154,19 @@ const { http, setToken } = ApiCall();
             >
               Login
             </Button>
+            <div className='flex justify-between'>
+              <Typography sx={{ marginTop: "20px"}}>
+              
+                  <a href='/register' style={{ color: '#3b82f6', alignSelf: "self-start" }}>
+                    Sign Up
+                  </a>
+              </Typography>
+              <Typography sx={{ marginTop: "20px" }}>
+                  <a href='/forgot-password' style={{ color: '#3b82f6', alignSelf: "end" }}>
+                    Forgot Password?
+                  </a>
+              </Typography>
+            </div>
           </form>
         </Paper>
       </div>
