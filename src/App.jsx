@@ -21,11 +21,23 @@ import ForgotPassword from './auth/ForgotPassword';
 import ResetPassword from './auth/ResetPassword';
 import InvalidToken from './auth/InvalidToken';
 import VerifyAccount from './auth/VerifyAccount';
-import CssBaseline from '@mui/material/CssBaseline'
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
 
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#1976d2',
+      },
+      secondary: {
+        main: '#dc004e',
+      },
+    },
+  });
 
   const checkUserToken = () => {
     const userToken = sessionStorage.getItem('token');
@@ -42,101 +54,104 @@ function App() {
 
   const queryCLient = new QueryClient();
   return (
-    <QueryClientProvider client={queryCLient}>
-      <DataProvider>
-          <Router>
-            <Routes>
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/verify/:id" element={<VerifyAccount />} />
-              <Route path="/forgot-password" element={<ForgotPassword />} />
-              <Route path="/reset-password/:token" element={<ResetPassword />} />
-              <Route path="/invalid-token" element={<InvalidToken />} />
-              
-              <Route path="/" element={
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <QueryClientProvider client={queryCLient}>
+        <DataProvider>
+            <Router>
+              <Routes>
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/verify/:id" element={<VerifyAccount />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password/:token" element={<ResetPassword />} />
+                <Route path="/invalid-token" element={<InvalidToken />} />
+                
+                <Route path="/" element={
+                    <RouteProtector isLoggedIn={isLoggedIn}>
+                      <ApplicationLayout>
+                        <Dashboard />
+                      </ApplicationLayout>
+                    </RouteProtector>
+                  } 
+                />
+                <Route path="/records" element={
+                    <RouteProtector isLoggedIn={isLoggedIn}>
+                      <ApplicationLayout>
+                        <Records />
+                      </ApplicationLayout>
+                    </RouteProtector>
+                  } 
+                />
+                <Route path="/results" element={
+                    <RouteProtector isLoggedIn={isLoggedIn}>
+                      <ApplicationLayout>
+                        <Results />
+                      </ApplicationLayout>
+                    </RouteProtector>
+                  } 
+                />
+                <Route path="/courier" element={
+                    <RouteProtector isLoggedIn={isLoggedIn}>
+                      <ApplicationLayout>
+                        <Courier />
+                      </ApplicationLayout>
+                    </RouteProtector>
+                  } 
+                />
+                <Route path="/courier-sample" element={
                   <RouteProtector isLoggedIn={isLoggedIn}>
                     <ApplicationLayout>
-                      <Dashboard />
+                      <CourierSample />
                     </ApplicationLayout>
                   </RouteProtector>
-                } 
-              />
-              <Route path="/records" element={
+                  } 
+                />
+                <Route path="/form" element={
                   <RouteProtector isLoggedIn={isLoggedIn}>
                     <ApplicationLayout>
-                      <Records />
+                      <FillupForm />
                     </ApplicationLayout>
                   </RouteProtector>
-                } 
-              />
-              <Route path="/results" element={
+                  } 
+                />
+                <Route path="/update-form" element={
                   <RouteProtector isLoggedIn={isLoggedIn}>
                     <ApplicationLayout>
-                      <Results />
+                      <UpdateForm />
                     </ApplicationLayout>
                   </RouteProtector>
-                } 
-              />
-              <Route path="/courier" element={
+                  } 
+                />
+                <Route path="/review-sample-form" element={
                   <RouteProtector isLoggedIn={isLoggedIn}>
                     <ApplicationLayout>
-                      <Courier />
+                      <ReviewSample />
                     </ApplicationLayout>
                   </RouteProtector>
-                } 
-              />
-              <Route path="/courier-sample" element={
-                <RouteProtector isLoggedIn={isLoggedIn}>
-                  <ApplicationLayout>
-                    <CourierSample />
-                  </ApplicationLayout>
-                </RouteProtector>
-                } 
-              />
-              <Route path="/form" element={
-                <RouteProtector isLoggedIn={isLoggedIn}>
-                  <ApplicationLayout>
-                    <FillupForm />
-                  </ApplicationLayout>
-                </RouteProtector>
-                } 
-              />
-              <Route path="/update-form" element={
-                <RouteProtector isLoggedIn={isLoggedIn}>
-                  <ApplicationLayout>
-                    <UpdateForm />
-                  </ApplicationLayout>
-                </RouteProtector>
-                } 
-              />
-              <Route path="/review-sample-form" element={
-                <RouteProtector isLoggedIn={isLoggedIn}>
-                  <ApplicationLayout>
-                    <ReviewSample />
-                  </ApplicationLayout>
-                </RouteProtector>
-                } 
-              />
-              <Route path="/courier-information-form" element={
-                <RouteProtector isLoggedIn={isLoggedIn}>
-                  <ApplicationLayout>
-                    <CourierInformationForm />
-                  </ApplicationLayout>
-                </RouteProtector>
-                } 
-              />
-              <Route path="/repeat-form" element={
-                <RouteProtector isLoggedIn={isLoggedIn}>
-                  <ApplicationLayout>
-                    <RepeatForm />
-                  </ApplicationLayout>
-                </RouteProtector>
-                } 
-              />
-            </Routes>
-          </Router>
-      </DataProvider>
-    </QueryClientProvider>
+                  } 
+                />
+                <Route path="/courier-information-form" element={
+                  <RouteProtector isLoggedIn={isLoggedIn}>
+                    <ApplicationLayout>
+                      <CourierInformationForm />
+                    </ApplicationLayout>
+                  </RouteProtector>
+                  } 
+                />
+                <Route path="/repeat-form" element={
+                  <RouteProtector isLoggedIn={isLoggedIn}>
+                    <ApplicationLayout>
+                      <RepeatForm />
+                    </ApplicationLayout>
+                  </RouteProtector>
+                  } 
+                />
+              </Routes>
+            </Router>
+        </DataProvider>
+      </QueryClientProvider>
+    </ThemeProvider>
   )
 }
 
